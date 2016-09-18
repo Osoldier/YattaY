@@ -7,4 +7,7 @@ package me.oso.yattay.core;
  */
 public class MasterRenderer {
 
+	public MasterRenderer() {
+		// TODO Auto-generated constructor stub
+	}
 }
