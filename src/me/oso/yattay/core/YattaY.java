@@ -3,9 +3,12 @@ package me.oso.yattay.core;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.GL20;
 
-import me.oso.yattay.world.*;
+import me.it.lib.graphics.Camera2d;
+import me.oso.yattay.world.Level;
 
 /**
  * YattaY.java
@@ -16,6 +19,8 @@ public class YattaY {
 
 	private final int WIDTH = 1280, HEIGHT = 720;
 	private Level level;
+	private MasterRenderer masterRenderer;
+	private Camera2d camera;
 	Window window;
 	private boolean running;
 	
@@ -28,10 +33,13 @@ public class YattaY {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL13.GL_MULTISAMPLE);
 		glViewport(0, 0, window.getPixWidth(), window.getPixHeight());
+		this.masterRenderer = new MasterRenderer(window.getPixWidth(), window.getPixHeight());
 	}
 	
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+		this.masterRenderer.render(camera, level);
 		
 		int error = glGetError();
 		if (error != GL_NO_ERROR)

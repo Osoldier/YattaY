@@ -1,5 +1,8 @@
 package me.oso.yattay.world;
 
+import me.it.lib.graphics.Loader;
+import me.it.lib.graphics.Model;
+
 /**
  * Block.java
  * @author Ibanez Thomas
@@ -10,6 +13,31 @@ public class Block {
 	public static final int SIZE = 16;
 	private BlockType type;
 	private int damages;
+	
+	public static Model model;
+	private static final float[] vertices = {
+			-0.5f, -0.5f,
+			0.5f, -0.5f,
+			0.5f, 0.5f, 
+			
+			0.5f, 0.5f,
+			-0.5f, 0.5f,
+			-0.5f, -0.5f 
+	};
+	
+	private static final float[] texCoords = {
+			0, 0,
+			1, 0, 
+			1, 1,
+			
+			1, 1, 
+			0, 1,
+			0, 0
+	};
+	
+	static {
+		model = Loader.createModelVAO(vertices, 2, texCoords);
+	}
 
 	public Block(BlockType type) {
 		this.type = type;

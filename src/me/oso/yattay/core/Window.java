@@ -24,7 +24,7 @@ public class Window {
 			System.err.println("Could not initialize GLFW!");
 			return;
 		}
-		
+		OSSpecifics.GLFWSpecifics();
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		glfwWindowHint(GLFW_SAMPLES, samples);
 		window = glfwCreateWindow(width, height, name, NULL, NULL);

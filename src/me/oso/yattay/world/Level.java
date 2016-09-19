@@ -7,6 +7,14 @@ package me.oso.yattay.world;
  */
 public class Level {
 
+	public Block[][] getLevel() {
+		return level;
+	}
+
+	public void setLevel(Block[][] level) {
+		this.level = level;
+	}
+
 	private Block[][] level;
 
 	public Level(int width, int height) {

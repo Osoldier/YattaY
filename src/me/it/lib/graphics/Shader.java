@@ -54,6 +54,8 @@ public abstract class Shader {
 	}
 
 	public abstract void loadUniforms();
+	public abstract void loadFrameUniforms();
+
 
 	protected void bindAttribute(int attr, String varName) {
 		glBindAttribLocation(programID, attr, varName);
