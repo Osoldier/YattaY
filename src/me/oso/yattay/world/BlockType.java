@@ -1,6 +1,6 @@
 package me.oso.yattay.world;
 
-import me.it.lib.graphics.*;
+import me.oso.lib.graphics.*;
 
 /**
  * BlockType.java

@@ -1,7 +1,6 @@
 package me.oso.yattay.world;
 
-import me.it.lib.graphics.Shader;
-import me.it.lib.graphics.Texture;
+import me.oso.lib.graphics.*;
 import me.oso.lib.math.ModelMatrix;
 import me.oso.lib.math.ProjectionMatrix;
 import me.oso.lib.math.ViewMatrix;
@@ -16,7 +15,7 @@ public class BlockShader extends Shader {
 	private static final String VERT_FILE = "src/res/shaders/block.vert";
 	private static final String FRAG_FILE = "src/res/shaders/block.frag";
 	
-	private int texLoc, mlMatLoc, vwMatLoc, prMatLoc;
+	private int mlMatLoc, vwMatLoc, prMatLoc;
 	private ModelMatrix mlMat;
 	private ViewMatrix vwMat;
 	private ProjectionMatrix prMat;
@@ -24,7 +23,6 @@ public class BlockShader extends Shader {
 	
 	public BlockShader() {
 		super(VERT_FILE, FRAG_FILE);
-		texLoc = this.getUniformLocation("texture");
 		mlMatLoc = this.getUniformLocation("mlMat");
 		vwMatLoc = this.getUniformLocation("vwMat");
 		prMatLoc = this.getUniformLocation("prMat");
@@ -34,7 +32,6 @@ public class BlockShader extends Shader {
 	@Override
 	public void loadUniforms() {
 		this.setUniform(mlMatLoc, mlMat);
-		//this.setUniform(texLoc, tex.getId());
 	}
 
 	@Override

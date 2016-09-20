@@ -1,4 +1,4 @@
-package me.it.lib.graphics;
+package me.oso.lib.graphics;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;

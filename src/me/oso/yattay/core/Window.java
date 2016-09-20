@@ -18,6 +18,9 @@ public class Window {
 
 	private long window;
 	private int pixWidth, pixHeight;
+	//Fields avoid GC to destroy the handle
+	@SuppressWarnings("unused")
+	private Input keyCallback;
 	
 	public Window(int width, int height, String name, int samples) {
 		if (glfwInit() != GL_TRUE) {
@@ -45,13 +48,17 @@ public class Window {
 	private void InitWindow(int width, int height) {
 		GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 		glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
-//		glfwSetKeyCallback(window, keyCallback = new Input());
+		glfwSetKeyCallback(window, keyCallback = new Input());
 //		glfwSetWindowSizeCallback(window, sizeCallback = new ResizeHandler());
 //		glfwSetMouseButtonCallback(window, mouseCallback = new MouseHandler());
 //		glfwSetScrollCallback(window, scrollCallback = new ScrollHandler());
 		glfwMakeContextCurrent(window);
-		glfwSwapInterval(0);
+		glfwSwapInterval(1);
 		glfwShowWindow(window);
+	}
+	
+	public void swapBuffers() {
+		glfwSwapBuffers(window);
 	}
 
 

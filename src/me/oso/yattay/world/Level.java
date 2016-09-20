@@ -24,13 +24,13 @@ public class Level {
 	public void generate() {
 		for (int i = 0; i < level.length; i++) {
 			for (int j = 0; j < level[i].length; j++) {
-				if(j < level[i].length/2) {
+				if(j > level[i].length/10) {
 					level[i][j] = new Block(BlockType.DIRT);
 				} else {
-					level[i][j] = new Block(BlockType.DIRT);
+					level[i][j] = new Block(BlockType.AIR);
 				}
 			}
 		}
+		System.out.println("Generated "+level.length+" x "+level[0].length+" level"); 
 	}
-
 }

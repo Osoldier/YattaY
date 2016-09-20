@@ -1,6 +1,6 @@
 package me.oso.yattay.core;
 
-import me.it.lib.graphics.Camera2d;
+import me.oso.lib.graphics.*;
 import me.oso.lib.math.ProjectionMatrix;
 import me.oso.yattay.world.Level;
 import me.oso.yattay.world.LevelRenderer;

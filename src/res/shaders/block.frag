@@ -7,6 +7,5 @@ in vec2 texCoord;
 out vec4 color;
 
 void main() {
-  //color = texture(texture, texCoord);
-  color = vec4(1.0);
+  color = texture2D(texture, texCoord);
 }

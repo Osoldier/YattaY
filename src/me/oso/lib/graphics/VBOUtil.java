@@ -1,4 +1,4 @@
-package me.it.lib.graphics;
+package me.oso.lib.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

@@ -6,7 +6,7 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL13;
 
-import me.it.lib.graphics.Camera2d;
+import me.oso.lib.graphics.*;
 import me.oso.yattay.world.Level;
 
 /**
@@ -20,7 +20,7 @@ public class YattaY {
 	private Level level;
 	private MasterRenderer masterRenderer;
 	private Camera2d camera;
-	Window window;
+	private static Window window;
 	private boolean running;
 	
 	public YattaY() {
@@ -28,9 +28,11 @@ public class YattaY {
 		GL.createCapabilities();
 		System.out.println("OpenGL: " + glGetString(GL_VERSION));
 		glEnable(GL_BLEND);
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
+		glCullFace(GL_FRONT);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL13.GL_MULTISAMPLE);
+		glClearColor(0, 0, 0, 1);
 		glViewport(0, 0, window.getPixWidth(), window.getPixHeight());
 		this.masterRenderer = new MasterRenderer(window.getPixWidth(), window.getPixHeight());
 		this.camera = new Camera2d();
@@ -38,35 +40,67 @@ public class YattaY {
 	
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+		this.camera.lookThrough();
 		this.masterRenderer.render(camera, level);
-		
-		int error = glGetError();
-		if (error != GL_NO_ERROR)
-			System.out.println("Error " + error);
-		
-		if (glfwWindowShouldClose(window.getID()) == GL_TRUE)
-			running  = false;
+		window.swapBuffers();
 	}
 	
 	public void update() {
 		glfwPollEvents();
-
+		if(Input.isKeyDown(GLFW_KEY_LEFT)) {
+			camera.getPosition().x -= 5f;
+		} else if(Input.isKeyDown(GLFW_KEY_RIGHT)) {
+			camera.getPosition().x += 5f;	
+		}
 	}
 	
 	public void start() {
-		level = new Level(WIDTH/2, HEIGHT/2);
+		level = new Level(500, 200);
 		level.generate();
 		running = true;
-		while(running) {
+		
+		long lastTime = System.nanoTime();
+		double delta = 0.0;
+		double ns = 1000000000.0 / 60.0;
+		long timer = System.currentTimeMillis();
+		int updates = 0;
+		int frames = 0;
+		while (running) {
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if (delta >= 1.0) {
+				update();
+				updates++;
+				delta--;
+			}
 			render();
-			update();
+			frames++;
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				System.out.println(updates + " ups, " + frames + " fps");
+				updates = 0;
+				frames = 0;
+			}
+			int error = glGetError();
+			if (error != GL_NO_ERROR)
+				System.out.println("Error " + error);
+			
+			if (glfwWindowShouldClose(window.getID()) == GL_TRUE)
+				running  = false;
 		}
+
+		glfwDestroyWindow(window.getID());
+		glfwTerminate();
 	}
 	
 	public static void main(String[] args) {
 		YattaY game = new YattaY();
 		game.start();
+	}
+
+	public static Window getWindow() {
+		return window;
 	}
 
 }
