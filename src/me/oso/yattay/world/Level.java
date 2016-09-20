@@ -27,7 +27,7 @@ public class Level {
 				if(j < level[i].length/2) {
 					level[i][j] = new Block(BlockType.DIRT);
 				} else {
-					level[i][j] = new Block(BlockType.AIR);
+					level[i][j] = new Block(BlockType.DIRT);
 				}
 			}
 		}

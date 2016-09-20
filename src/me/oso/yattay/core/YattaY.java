@@ -5,7 +5,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
 
 import me.it.lib.graphics.Camera2d;
 import me.oso.yattay.world.Level;
@@ -29,11 +28,12 @@ public class YattaY {
 		GL.createCapabilities();
 		System.out.println("OpenGL: " + glGetString(GL_VERSION));
 		glEnable(GL_BLEND);
-		glEnable(GL20.GL_POINT_SPRITE);
+		glDisable(GL_CULL_FACE);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		glEnable(GL13.GL_MULTISAMPLE);
 		glViewport(0, 0, window.getPixWidth(), window.getPixHeight());
 		this.masterRenderer = new MasterRenderer(window.getPixWidth(), window.getPixHeight());
+		this.camera = new Camera2d();
 	}
 	
 	public void render() {
@@ -55,7 +55,7 @@ public class YattaY {
 	}
 	
 	public void start() {
-		level = new Level(WIDTH, WIDTH);
+		level = new Level(WIDTH/2, HEIGHT/2);
 		level.generate();
 		running = true;
 		while(running) {

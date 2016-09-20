@@ -34,7 +34,7 @@ public class BlockShader extends Shader {
 	@Override
 	public void loadUniforms() {
 		this.setUniform(mlMatLoc, mlMat);
-		this.setUniform(texLoc, tex.getId());
+		//this.setUniform(texLoc, tex.getId());
 	}
 
 	@Override

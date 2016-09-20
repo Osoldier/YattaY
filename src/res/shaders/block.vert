@@ -8,6 +8,6 @@ layout (location = 2) in vec2 inTexCoord;
 out vec2 texCoord;
 
 void main() {
-  gl_Position = vec4(vertex, 1.0, 1.0) * mlMat * vwMat * prMat;
+  gl_Position = vec4(vertex, 0.0, 1.0) * mlMat * prMat;
   texCoord = inTexCoord;
 }
