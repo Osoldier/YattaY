@@ -53,7 +53,7 @@ public class Window {
 //		glfwSetMouseButtonCallback(window, mouseCallback = new MouseHandler());
 //		glfwSetScrollCallback(window, scrollCallback = new ScrollHandler());
 		glfwMakeContextCurrent(window);
-		glfwSwapInterval(1);
+		glfwSwapInterval(0);
 		glfwShowWindow(window);
 	}
 	

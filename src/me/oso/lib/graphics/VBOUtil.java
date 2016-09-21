@@ -1,10 +1,7 @@
 package me.oso.lib.graphics;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
-import java.util.ArrayList;
+import java.nio.*;
+import java.util.*;
 
 public class VBOUtil {
 
@@ -37,4 +34,23 @@ public class VBOUtil {
 		return floatArray;
 	}
 
+	public static float[] FloatListToArray(List<Float> e) {
+		float[] f = new float[e.size()];
+		int i = 0;
+		for (Float fl : e) {
+			f[i] = fl;
+			i++;
+		}
+		return f;
+	}
+	
+	public static int[] IntListToArray(List<Integer> e) {
+		int[] f = new int[e.size()];
+		int i = 0;
+		for (Integer fl : e) {
+			f[i] = fl;
+			i++;
+		}
+		return f;
+	}
 }

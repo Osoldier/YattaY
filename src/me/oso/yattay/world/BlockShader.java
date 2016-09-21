@@ -19,13 +19,14 @@ public class BlockShader extends Shader {
 	private ModelMatrix mlMat;
 	private ViewMatrix vwMat;
 	private ProjectionMatrix prMat;
-	private Texture tex;
 	
-	public BlockShader() {
+	public BlockShader(int blockSize, float atlasSize) {
 		super(VERT_FILE, FRAG_FILE);
 		mlMatLoc = this.getUniformLocation("mlMat");
 		vwMatLoc = this.getUniformLocation("vwMat");
 		prMatLoc = this.getUniformLocation("prMat");
+		this.setUniform(this.getUniformLocation("atlasSize"), atlasSize);
+		this.setUniform(this.getUniformLocation("blockSize"), blockSize);
 		this.mlMat = new ModelMatrix();
 	}
 
@@ -62,14 +63,5 @@ public class BlockShader extends Shader {
 
 	public void setPrMat(ProjectionMatrix prMat) {
 		this.prMat = prMat;
-	}
-
-	public Texture getTex() {
-		return tex;
-	}
-
-	public void setTex(Texture tex) {
-		this.tex = tex;
-	}
-	
+	}	
 }
