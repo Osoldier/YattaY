@@ -3,6 +3,7 @@ package me.oso.yattay.world;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
+import static org.lwjgl.opengl.GL31.*;
 
 import me.oso.lib.graphics.*;
 import me.oso.lib.math.ProjectionMatrix;
@@ -45,16 +46,12 @@ public class LevelRenderer {
 				int y = j * Block.SIZE;
 				position.x = x;
 				position.y = y;
-				
 				if (l.getLevel()[i][j].getType().getTexture() != null && inView(c, x, y)) {
-					l.getLevel()[i][j].getType().getTexture().bind();
-					bShader.setTex(l.getLevel()[i][j].getType().getTexture());
-					bShader.getMlMat().Transform(position, 0, 0, 0, SCALE_VEC);
-					bShader.loadUniforms();
-					glDrawArrays(GL_TRIANGLES, 0, 6);
 				}
 			}
+			glDrawArraysInstanced(GL_TRIANGLES, 0, 6, 10000);
 		}
+		
 		clean();
 	}
 	
