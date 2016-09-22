@@ -24,8 +24,10 @@ public class Level {
 	public void generate() {
 		for (int i = 0; i < level.length; i++) {
 			for (int j = 0; j < level[i].length; j++) {
-				if(j > level[i].length/10) {
+				if(j > 100) {
 					level[i][j] = new Block(BlockType.DIRT);
+				} else if(j == 100) {
+					level[i][j] = new Block(BlockType.GRASS);
 				} else {
 					level[i][j] = new Block(BlockType.AIR);
 				}

@@ -8,9 +8,7 @@ package me.oso.yattay.player;
 public class Player {
 
 	public Player() {
-
+		
 	}
-	
-	
 	
 }

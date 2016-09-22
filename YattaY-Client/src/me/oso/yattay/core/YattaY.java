@@ -55,8 +55,10 @@ public class YattaY {
 	}
 	
 	public void start() {
-		level = new Level(500, 200);
+		level = new Level(500, 255);
 		level.generate();
+		camera.getPosition().x = 500*16/2;
+		camera.getPosition().y = 128*16/2;
 		running = true;
 		
 		long lastTime = System.nanoTime();
