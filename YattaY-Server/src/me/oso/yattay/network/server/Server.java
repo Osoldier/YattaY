@@ -25,8 +25,9 @@ public class Server {
 		try {
 			BufferedReader br = null;
 			br = new BufferedReader(new InputStreamReader(System.in));
+			String input;
 			while (true) {
-				String input = br.readLine();
+				input = br.readLine();
 				if(input.equals("stop")) {
 					break;
 				}
