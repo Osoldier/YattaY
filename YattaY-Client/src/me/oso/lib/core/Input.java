@@ -1,4 +1,4 @@
-package me.oso.yattay.core;
+package me.oso.lib.core;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWKeyCallback;

@@ -6,6 +6,8 @@ import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL13;
 
+import me.oso.lib.core.Input;
+import me.oso.lib.core.Window;
 import me.oso.lib.graphics.*;
 import me.oso.yattay.world.Level;
 
