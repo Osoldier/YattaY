@@ -15,10 +15,30 @@ public abstract class UIComponent {
 	private Vector2f size;
 	private Model model;
 	
+	protected static final float[] vertices = {
+			-0.5f, -0.5f,
+			0.5f, -0.5f,
+			0.5f, 0.5f, 
+			
+			0.5f, 0.5f,
+			-0.5f, 0.5f,
+			-0.5f, -0.5f 
+	};
+	
+	protected static final float[] texCoords = {
+			0, 0,
+			1, 0, 
+			1, 1,
+			
+			1, 1, 
+			0, 1,
+			0, 0
+	};
+	
 	public abstract void onMouseHover();
 	public abstract void onClick();
 	public abstract void onMouseExit();
-	
+	public abstract void bindShader();
 	
 	protected Vector2f getPosition() {
 		return position;
@@ -46,5 +66,9 @@ public abstract class UIComponent {
 	}
 	public Model getModel() {
 		return model;
+	}
+	
+	protected void setModel(Model m) {
+		this.model = m;
 	}
 }

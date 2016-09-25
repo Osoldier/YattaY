@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.oso.lib.math.ProjectionMatrix;
+import me.oso.yattay.ui.shaders.*;
 
 /**
  * Created by Thomas on 24 sept. 2016
@@ -11,15 +12,17 @@ import me.oso.lib.math.ProjectionMatrix;
 public class UIRenderer {
 
 	private List<UIComponent> components;
-	private ProjectionMatrix prMat;
+	public static ProjectionMatrix prMat;
 	
 	public UIRenderer(ProjectionMatrix pr) {
 		this.components = new ArrayList<UIComponent>();
-		this.prMat = pr;
+		prMat = pr;
 	}
 	
 	public void render() {
-		
+		for (UIComponent uiComponent : components) {
+			uiComponent.bindShader();
+		}
 	}
 
 	public List<UIComponent> getComponents() {

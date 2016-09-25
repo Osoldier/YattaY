@@ -76,12 +76,12 @@ public abstract class Loader {
 		return vaoID;
 	}
 
-	public static int createGUIVAO(float[] pos, float[] tex) {
+	public static Model createGUIVAO(float[] pos, float[] tex) {
 		int vaoID = createVAO();
 		storeDataInAttributeList(0, 2, pos);
 		storeDataInAttributeList(2, 2, tex);
 		unbindVAO();
-		return vaoID;
+		return new Model(vaoID, pos.length / 2);
 	}
 
 	private static List<Integer> vaos = new ArrayList<Integer>();

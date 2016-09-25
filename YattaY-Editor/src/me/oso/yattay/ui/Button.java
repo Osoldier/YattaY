@@ -1,7 +1,8 @@
 package me.oso.yattay.ui;
 
-import me.oso.lib.graphics.Texture;
+import me.oso.lib.graphics.*;
 import me.oso.lib.math.Vector2f;
+import me.oso.yattay.ui.shaders.*;
 
 /**
  * Created by Thomas on 24 sept. 2016
@@ -9,8 +10,12 @@ import me.oso.lib.math.Vector2f;
 public abstract class Button extends UIComponent {
 	
 	private Texture std, hover, click;
-	private 
+	private static BtnShader btnShader;
 	
+	static {
+		btnShader = new BtnShader(UIRenderer.prMat);
+	}
+
 	public Button(int x, int y, int width, int height, Texture std) {
 		this(x, y, width, height, null, std, null, null);
 	}
@@ -23,6 +28,7 @@ public abstract class Button extends UIComponent {
 		this.std = std;
 		this.hover = hover;
 		this.click = click;
+		this.setModel(Loader.createGUIVAO(UIComponent.vertices, UIComponent.texCoords));
 	}
 
 	@Override
@@ -42,6 +48,10 @@ public abstract class Button extends UIComponent {
 	@Override
 	public void onMouseExit() {		
 		this.setTexture(std);
-		
+	}
+	
+	@Override
+	public void bindShader() {
+		btnShader.start();
 	}
 }
