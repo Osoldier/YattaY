@@ -9,6 +9,8 @@ import org.lwjgl.opengl.GL13;
 import me.oso.lib.core.Input;
 import me.oso.lib.core.Window;
 import me.oso.lib.graphics.Camera2d;
+import me.oso.lib.graphics.Texture;
+import me.oso.yattay.ui.Menu;
 
 /**
  * Editor.java
@@ -17,10 +19,12 @@ import me.oso.lib.graphics.Camera2d;
  */
 public class Editor {
 	
-	private final int WIDTH = 1365, HEIGHT = 768;
+	public static final int WIDTH = 1365, HEIGHT = 768;
 	private Window window;
 	private Camera2d camera;
 	private boolean running;
+	private MasterRenderer masterRenderer;
+	private Menu blocMenu;
 	
 	
 	public Editor() {
@@ -34,11 +38,14 @@ public class Editor {
 		glEnable(GL13.GL_MULTISAMPLE);
 		glClearColor(0, 0, 0, 1);
 		glViewport(0, 0, window.getPixWidth(), window.getPixHeight());
+		this.masterRenderer = new MasterRenderer();
+		this.blocMenu = new Menu();
+		this.blocMenu.getComponents().add(new BtnBlock(500, 500, 1000, 1000, new Texture("res/textures/blocks.png")));
 	}
 	
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+		this.masterRenderer.renderUI(blocMenu);
 		window.swapBuffers();
 	}
 	

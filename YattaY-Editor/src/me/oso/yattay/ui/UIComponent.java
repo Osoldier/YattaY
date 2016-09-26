@@ -1,6 +1,7 @@
 package me.oso.yattay.ui;
 
 import me.oso.lib.graphics.Model;
+import me.oso.lib.graphics.Shader;
 import me.oso.lib.graphics.Texture;
 import me.oso.lib.math.Vector2f;
 
@@ -14,6 +15,7 @@ public abstract class UIComponent {
 	private Vector2f position;
 	private Vector2f size;
 	private Model model;
+	private Shader shader;
 	
 	protected static final float[] vertices = {
 			-0.5f, -0.5f,
@@ -67,8 +69,13 @@ public abstract class UIComponent {
 	public Model getModel() {
 		return model;
 	}
-	
 	protected void setModel(Model m) {
 		this.model = m;
+	}
+	public Shader getShader() {
+		return shader;
+	}
+	protected void setShader(Shader shader) {
+		this.shader = shader;
 	}
 }

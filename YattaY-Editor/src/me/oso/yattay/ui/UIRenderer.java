@@ -1,36 +1,36 @@
 package me.oso.yattay.ui;
 
-import java.util.ArrayList;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
+
 import java.util.List;
 
 import me.oso.lib.math.ProjectionMatrix;
-import me.oso.yattay.ui.shaders.*;
 
 /**
  * Created by Thomas on 24 sept. 2016
  */
 public class UIRenderer {
 
-	private List<UIComponent> components;
 	public static ProjectionMatrix prMat;
 	
 	public UIRenderer(ProjectionMatrix pr) {
-		this.components = new ArrayList<UIComponent>();
 		prMat = pr;
 	}
 	
-	public void render() {
+	public void render(List<UIComponent> components) {
 		for (UIComponent uiComponent : components) {
-			uiComponent.bindShader();
+			uiComponent.getShader().start();
+			uiComponent.getShader().loadFrameUniforms();
+			uiComponent.getShader().loadUniforms();
+			glBindVertexArray(uiComponent.getModel().getVaoID());
+			glEnableVertexAttribArray(0);
+			glEnableVertexAttribArray(2);
+			glDrawArrays(GL_TRIANGLES, 0, uiComponent.getModel().getVertexCount());
+			glDisableVertexAttribArray(2);
+			glDisableVertexAttribArray(0);
 		}
+		glBindVertexArray(0);
 	}
-
-	public List<UIComponent> getComponents() {
-		return components;
-	}
-
-	public void setComponents(List<UIComponent> components) {
-		this.components = components;
-	}
-	
 }

@@ -28,7 +28,17 @@ public abstract class Button extends UIComponent {
 		this.std = std;
 		this.hover = hover;
 		this.click = click;
-		this.setModel(Loader.createGUIVAO(UIComponent.vertices, UIComponent.texCoords));
+		float[] vertices = {
+				-0.5f*width+x, -0.5f*height+y,
+				0.5f*width+x, -0.5f*height+y,
+				0.5f*width+x, 0.5f*height+y, 
+				
+				0.5f*width+x, 0.5f*height+y,
+				-0.5f*width+x, 0.5f*height+y,
+				-0.5f*width+x, -0.5f*height+y 
+		};
+		this.setModel(Loader.createGUIVAO(vertices, UIComponent.texCoords));
+		this.setShader(btnShader);
 	}
 
 	@Override
