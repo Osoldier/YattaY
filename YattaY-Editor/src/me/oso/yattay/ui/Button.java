@@ -56,7 +56,7 @@ public abstract class Button extends UIComponent {
 	}
 	
 	@Override
-	public void onMouseExit() {		
+	public void onMouseOut() {		
 		this.setTexture(std);
 	}
 	

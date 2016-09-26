@@ -12,4 +12,15 @@ public class BtnBlock extends Button {
 		super(x, y, width, height, std);
 	}
 	
+	@Override
+	public void onClick() {
+		super.onClick();
+		System.out.println("llol");
+	}
+	
+	@Override
+	public void onMouseHover() {
+		super.onMouseHover();
+	}
+	
 }

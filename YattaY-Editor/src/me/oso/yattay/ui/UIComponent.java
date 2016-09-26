@@ -39,7 +39,7 @@ public abstract class UIComponent {
 	
 	public abstract void onMouseHover();
 	public abstract void onClick();
-	public abstract void onMouseExit();
+	public abstract void onMouseOut();
 	public abstract void bindShader();
 	
 	protected Vector2f getPosition() {

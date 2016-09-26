@@ -46,11 +46,12 @@ public class Editor {
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		this.masterRenderer.renderUI(blocMenu);
-		window.swapBuffers();
+		window.update();
 	}
 	
 	public void update() {
 		glfwPollEvents();
+		this.blocMenu.update();
 		if(Input.isKeyDown(GLFW_KEY_LEFT)) {
 			camera.getPosition().x -= 5f;
 		} else if(Input.isKeyDown(GLFW_KEY_RIGHT)) {
