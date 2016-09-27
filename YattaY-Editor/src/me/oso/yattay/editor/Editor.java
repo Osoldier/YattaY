@@ -67,7 +67,7 @@ public class Editor {
 		this.camera.lookThrough();
 		this.masterRenderer.renderUI(blocMenu);
 		this.masterRenderer.renderLevel(camera, level);
-		this.masterRenderer.renderMask((int) Math.floor((camera.getPosition().x + window.getMouseX()) / Block.SIZE), (int) Math.floor((camera.getPosition().y + window.getMouseY()) / Block.SIZE), BlockType.AIR);
+		this.masterRenderer.renderMask((int) Math.floor((camera.getPosition().x + window.getMouseX()) / Block.SIZE), (int) Math.floor((camera.getPosition().y + window.getMouseY()) / Block.SIZE), BtnBlock.getLastSelectedType());
 		window.update();
 	}
 
@@ -102,7 +102,7 @@ public class Editor {
 
 		long lastTime = System.nanoTime();
 		double delta = 0.0;
-		double ns = 1000000000.0 / 60.0;
+		double ns = 1000000000.0 / 240.0;
 		long timer = System.currentTimeMillis();
 		int updates = 0;
 		int frames = 0;
