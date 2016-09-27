@@ -29,6 +29,8 @@ public class LevelRenderer {
 	private int texVBO;
 	private static Texture atlas;
 	private static final float ATLAS_SIZE = 16.0f;
+	
+	public static final int LEFT_OFFSET = Editor.BTN_SIZE*Editor.BTN_PER_LINE;
 
 	public LevelRenderer(ProjectionMatrix prMat) {
 		bShader = new BlockShader(Block.SIZE, ATLAS_SIZE);
@@ -38,6 +40,7 @@ public class LevelRenderer {
 		this.textures = new LinkedList<Float>();
 		texVBO = glGenBuffers();
 		atlas = new Texture("res/textures/blocks.png");
+		bShader.setUniform(bShader.getUniformLocation("LEFT_OFFSET"), LEFT_OFFSET);
 	}
 
 	private void prepare(Camera2d c) {

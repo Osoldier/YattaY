@@ -13,26 +13,27 @@ import me.oso.yattay.world.*;
 
 /**
  * Editor.java
+ * 
  * @author Ibanez Thomas
  * @date 22 sept. 2016
  */
 public class Editor {
-	
+
 	public static final String TEX_PATH = "res/textures/";
 	public static final int WIDTH = 1365, HEIGHT = 768;
 	public static final int LEVEL_WIDTH = 1000, LEVEL_HEIGHT = 200;
-	private static final int BTN_SIZE = 32;
-	
+	public static final int BTN_SIZE = 32;
+	public static final int BTN_PER_LINE = 4;
+
 	private static Window window;
 	private Camera2d camera;
 	private boolean running;
 	private MasterRenderer masterRenderer;
 	private Menu blocMenu;
 	private Level level;
-	
-	
+
 	public Editor() {
-		window =  new Window(WIDTH, HEIGHT, "YattaY Editor", 1);
+		window = new Window(WIDTH, HEIGHT, "YattaY Editor", 1, false);
 		GL.createCapabilities();
 		System.out.println("OpenGL: " + glGetString(GL_VERSION));
 		glEnable(GL_BLEND);
@@ -42,36 +43,38 @@ public class Editor {
 		glEnable(GL13.GL_MULTISAMPLE);
 		glClearColor(0, 0, 0, 1);
 		glViewport(0, 0, window.getPixWidth(), window.getPixHeight());
-		
+
 		this.masterRenderer = new MasterRenderer();
 		this.blocMenu = new Menu();
 		buildMenu();
 		this.level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT);
 		this.level.generate();
-		this.camera = new Camera2d(0, 70*16);
+		this.camera = new Camera2d(0, 70 * 16);
 	}
-	
+
 	private void buildMenu() {
 		int i = 0;
 		for (BlockType bt : BlockType.class.getEnumConstants()) {
-			int x = i*BTN_SIZE % (4*BTN_SIZE) + BTN_SIZE/2;
-			int y = (int)Math.floor(i*BTN_SIZE / (4*BTN_SIZE))*BTN_SIZE + BTN_SIZE/2;
+			int x = i * BTN_SIZE % (BTN_PER_LINE * BTN_SIZE) + BTN_SIZE / 2;
+			int y = (int) Math.floor(i * BTN_SIZE / (BTN_PER_LINE * BTN_SIZE)) * BTN_SIZE + BTN_SIZE / 2;
 			this.blocMenu.getComponents().add(new BtnBlock(x, y, BTN_SIZE, BTN_SIZE, bt));
 			i++;
 		}
 	}
-	
+
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		this.camera.lookThrough();
 		this.masterRenderer.renderUI(blocMenu);
 		this.masterRenderer.renderLevel(camera, level);
+		this.masterRenderer.renderMask((int) Math.floor((camera.getPosition().x + window.getMouseX()) / Block.SIZE), (int) Math.floor((camera.getPosition().y + window.getMouseY()) / Block.SIZE), BlockType.AIR);
 		window.update();
 	}
-	
+
 	public void update() {
 		glfwPollEvents();
 		this.blocMenu.update();
+		//move
 		if(Input.isKeyDown(GLFW_KEY_LEFT)) {
 			camera.getPosition().x -= 5f;
 		} else if(Input.isKeyDown(GLFW_KEY_RIGHT)) {
@@ -82,11 +85,21 @@ public class Editor {
 		} else if(Input.isKeyDown(GLFW_KEY_DOWN)) {
 			camera.getPosition().y += 5f;	
 		}
+		//block placement
+		if(MouseHandler.isButtonDown(0)) {
+			if(window.getMouseX() > LevelRenderer.LEFT_OFFSET) {
+				int x = (int)Math.floor((camera.getPosition().x+window.getMouseX()+Block.SIZE/2) / Block.SIZE);
+				int y = (int)Math.floor((camera.getPosition().y+window.getMouseY()+Block.SIZE/2) / Block.SIZE);
+				if(x > 0 && x < LEVEL_WIDTH && y > 0 && y < LEVEL_HEIGHT) {
+					level.getLevel()[x][y].setType(BtnBlock.getLastSelectedType());
+				}
+			}
+		}
 	}
-	
+
 	public void start() {
 		running = true;
-		
+
 		long lastTime = System.nanoTime();
 		double delta = 0.0;
 		double ns = 1000000000.0 / 60.0;
@@ -113,15 +126,15 @@ public class Editor {
 			int error = glGetError();
 			if (error != GL_NO_ERROR)
 				System.out.println("Error " + error);
-			
+
 			if (glfwWindowShouldClose(window.getID()) == GL_TRUE)
-				running  = false;
+				running = false;
 		}
 
 		glfwDestroyWindow(window.getID());
 		glfwTerminate();
 	}
-	
+
 	public static void main(String[] args) {
 		new Editor().start();
 	}
@@ -129,5 +142,5 @@ public class Editor {
 	public static Window getWindow() {
 		return window;
 	}
-	
+
 }

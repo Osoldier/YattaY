@@ -8,6 +8,7 @@ import me.oso.yattay.world.*;
  */
 public class BtnBlock extends Button {
 
+	private static BlockType lastSelectedType = BlockType.AIR;
 	private BlockType bt;
 	
 	public BtnBlock(int x, int y, int width, int height, BlockType t) {
@@ -18,12 +19,15 @@ public class BtnBlock extends Button {
 	@Override
 	public void onClick() {
 		super.onClick();
-		System.out.println(bt.name());
+		lastSelectedType = bt;
 	}
 	
 	@Override
 	public void onMouseHover() {
 		super.onMouseHover();
 	}
-	
+
+	public static BlockType getLastSelectedType() {
+		return lastSelectedType;
+	}	
 }

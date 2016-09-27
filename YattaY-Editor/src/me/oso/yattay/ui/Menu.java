@@ -1,10 +1,9 @@
 package me.oso.yattay.ui;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import me.oso.lib.core.MouseHandler;
-import me.oso.lib.core.Window;
+import me.oso.lib.core.*;
+import me.oso.yattay.editor.*;
 
 /**
  * Created by Thomas on 26 sept. 2016
@@ -31,8 +30,8 @@ public class Menu {
 	}
 
 	private boolean mouseIn(float x, float y, float w, float h) {
-		if (Window.getMouseX() > x - w / 2 && Window.getMouseX() < x + w / 2) {
-			if (Window.getMouseY() > y - h / 2 && Window.getMouseY() < y + h / 2) {
+		if (Editor.getWindow().getMouseX() > x - w / 2 && Editor.getWindow().getMouseX() < x + w / 2) {
+			if (Editor.getWindow().getMouseY() > y - h / 2 && Editor.getWindow().getMouseY() < y + h / 2) {
 				return true;
 			}
 		}

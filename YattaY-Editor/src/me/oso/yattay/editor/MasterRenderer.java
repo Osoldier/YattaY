@@ -30,4 +30,7 @@ public class MasterRenderer {
 		levelRenderer.renderLevel(c, l);
 	}
 	
+	public void renderMask(int x, int y, BlockType type) {
+		
+	}
 }

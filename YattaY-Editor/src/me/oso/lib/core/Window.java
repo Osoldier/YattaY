@@ -22,14 +22,14 @@ public class Window {
 	private Input keyCallback;
 	private MouseHandler mouseCallback;
 	private static DoubleBuffer mx, my;
-	private static double mouseX, mouseY;
+	private double mouseX, mouseY;
 	
 	static {
 		mx = BufferUtils.createDoubleBuffer(1);
 		my = BufferUtils.createDoubleBuffer(1);
 	}
 	
-	public Window(int width, int height, String name, int samples) {
+	public Window(int width, int height, String name, int samples, boolean resizable) {
 		if (glfwInit() != GL_TRUE) {
 			System.err.println("Could not initialize GLFW!");
 			return;
@@ -37,6 +37,7 @@ public class Window {
 		OSSpecifics.GLFWSpecifics();
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		glfwWindowHint(GLFW_SAMPLES, samples);
+		glfwWindowHint(GLFW_RESIZABLE, resizable?GL_TRUE:GL_FALSE);
 		window = glfwCreateWindow(width, height, name, NULL, NULL);
 		
 		if (window == NULL) {
@@ -100,19 +101,12 @@ public class Window {
 		return window;
 	}
 
-	public static double getMouseX() {
+	public double getMouseX() {
 		return mouseX;
 	}
 
-	public static void setMouseX(double mouseX) {
-		Window.mouseX = mouseX;
-	}
-
-	public static double getMouseY() {
+	public double getMouseY() {
 		return mouseY;
 	}
 
-	public static void setMouseY(double mouseY) {
-		Window.mouseY = mouseY;
-	}
 }
