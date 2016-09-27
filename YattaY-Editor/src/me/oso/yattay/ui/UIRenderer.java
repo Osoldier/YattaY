@@ -22,6 +22,7 @@ public class UIRenderer {
 	public void render(List<UIComponent> components) {
 		for (UIComponent uiComponent : components) {
 			uiComponent.getShader().start();
+			uiComponent.getTexture().bind();
 			uiComponent.getShader().loadFrameUniforms();
 			uiComponent.getShader().loadUniforms();
 			glBindVertexArray(uiComponent.getModel().getVaoID());

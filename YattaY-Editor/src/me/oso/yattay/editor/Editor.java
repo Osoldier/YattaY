@@ -3,14 +3,13 @@ package me.oso.yattay.editor;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL13;
+import org.lwjgl.opengl.*;
 
-import me.oso.lib.core.Input;
-import me.oso.lib.core.Window;
-import me.oso.lib.graphics.Camera2d;
-import me.oso.lib.graphics.Texture;
-import me.oso.yattay.ui.Menu;
+import me.oso.lib.core.*;
+import me.oso.lib.graphics.*;
+import me.oso.yattay.editor.ui.*;
+import me.oso.yattay.ui.*;
+import me.oso.yattay.world.*;
 
 /**
  * Editor.java
@@ -19,12 +18,17 @@ import me.oso.yattay.ui.Menu;
  */
 public class Editor {
 	
+	public static final String TEX_PATH = "res/textures/";
 	public static final int WIDTH = 1365, HEIGHT = 768;
-	private Window window;
+	public static final int LEVEL_WIDTH = 1000, LEVEL_HEIGHT = 200;
+	private static final int BTN_SIZE = 32;
+	
+	private static Window window;
 	private Camera2d camera;
 	private boolean running;
 	private MasterRenderer masterRenderer;
 	private Menu blocMenu;
+	private Level level;
 	
 	
 	public Editor() {
@@ -38,14 +42,30 @@ public class Editor {
 		glEnable(GL13.GL_MULTISAMPLE);
 		glClearColor(0, 0, 0, 1);
 		glViewport(0, 0, window.getPixWidth(), window.getPixHeight());
+		
 		this.masterRenderer = new MasterRenderer();
 		this.blocMenu = new Menu();
-		this.blocMenu.getComponents().add(new BtnBlock(500, 500, 1000, 1000, new Texture("res/textures/blocks.png")));
+		buildMenu();
+		this.level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT);
+		this.level.generate();
+		this.camera = new Camera2d(0, 70*16);
+	}
+	
+	private void buildMenu() {
+		int i = 0;
+		for (BlockType bt : BlockType.class.getEnumConstants()) {
+			int x = i*BTN_SIZE % (4*BTN_SIZE) + BTN_SIZE/2;
+			int y = (int)Math.floor(i*BTN_SIZE / (4*BTN_SIZE))*BTN_SIZE + BTN_SIZE/2;
+			this.blocMenu.getComponents().add(new BtnBlock(x, y, BTN_SIZE, BTN_SIZE, bt));
+			i++;
+		}
 	}
 	
 	public void render() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		this.camera.lookThrough();
 		this.masterRenderer.renderUI(blocMenu);
+		this.masterRenderer.renderLevel(camera, level);
 		window.update();
 	}
 	
@@ -56,6 +76,11 @@ public class Editor {
 			camera.getPosition().x -= 5f;
 		} else if(Input.isKeyDown(GLFW_KEY_RIGHT)) {
 			camera.getPosition().x += 5f;	
+		}
+		if(Input.isKeyDown(GLFW_KEY_UP)) {
+			camera.getPosition().y -= 5f;
+		} else if(Input.isKeyDown(GLFW_KEY_DOWN)) {
+			camera.getPosition().y += 5f;	
 		}
 	}
 	
@@ -99,6 +124,10 @@ public class Editor {
 	
 	public static void main(String[] args) {
 		new Editor().start();
+	}
+
+	public static Window getWindow() {
+		return window;
 	}
 	
 }
