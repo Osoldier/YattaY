@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class OSSpecifics {
 
-	private static boolean WIN, OSX, LINUX;
+	public static boolean WIN, OSX, LINUX;
 
 	static {
 		String system = System.getProperty("os.name").toLowerCase();
@@ -21,7 +21,7 @@ public class OSSpecifics {
 	public static void GLFWSpecifics() {
 		if (OSX) {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		}

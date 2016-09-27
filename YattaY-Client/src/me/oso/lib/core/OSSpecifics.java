@@ -8,7 +8,7 @@ import static org.lwjgl.opengl.GL11.*;
  */
 public class OSSpecifics {
 
-	private static boolean WIN, OSX, LINUX;
+	public static boolean WIN, OSX, LINUX;
 
 	static {
 		String system = System.getProperty("os.name").toLowerCase();

@@ -127,7 +127,7 @@ public class Editor {
 			if (error != GL_NO_ERROR)
 				System.out.println("Error " + error);
 
-			if (glfwWindowShouldClose(window.getID()) == GL_TRUE)
+			if (glfwWindowShouldClose(window.getID()))
 				running = false;
 		}
 

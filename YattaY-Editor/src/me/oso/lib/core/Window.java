@@ -2,12 +2,13 @@ package me.oso.lib.core;
 
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.nio.*;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
 
-import org.lwjgl.*;
-import org.lwjgl.glfw.*;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWVidMode;
 
 /**
  * Window.java
@@ -30,31 +31,30 @@ public class Window {
 	}
 	
 	public Window(int width, int height, String name, int samples, boolean resizable) {
-		if (glfwInit() != GL_TRUE) {
+		if (!glfwInit()) {
 			System.err.println("Could not initialize GLFW!");
 			return;
 		}
 		OSSpecifics.GLFWSpecifics();
-		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 		glfwWindowHint(GLFW_SAMPLES, samples);
+		glfwWindowHint(GLFW_FOCUSED, GL_TRUE); 
 		glfwWindowHint(GLFW_RESIZABLE, resizable?GL_TRUE:GL_FALSE);
 		window = glfwCreateWindow(width, height, name, NULL, NULL);
-		
 		if (window == NULL) {
 			System.err.println("Could not create GLFW window!");
 			return;
 		}
 		
-		ByteBuffer FBW = BufferUtils.createByteBuffer(4), FBH = BufferUtils.createByteBuffer(4); 
+		IntBuffer FBW = BufferUtils.createIntBuffer(4), FBH = BufferUtils.createIntBuffer(4); 
 		glfwGetFramebufferSize(window, FBW, FBH);
-		pixWidth = FBW.getInt(0);
-		pixHeight = FBH.getInt(0);
+		pixWidth = FBW.get(0);
+		pixHeight = FBH.get(0);
 		InitWindow(width, height);
 	}
 	
 	public void release() {
-		keyCallback.release();
-		mouseCallback.release();
+		keyCallback.free();
+		mouseCallback.free();
 	}
 	
 	private void InitWindow(int width, int height) {
@@ -67,6 +67,10 @@ public class Window {
 		glfwMakeContextCurrent(window);
 		glfwSwapInterval(0);
 		glfwShowWindow(window);
+		if(OSSpecifics.OSX) {
+			glfwIconifyWindow(window);
+			glfwRestoreWindow(window);
+		}
 	}
 	
 	public void update() {

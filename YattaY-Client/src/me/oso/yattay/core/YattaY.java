@@ -26,7 +26,7 @@ public class YattaY {
 	private boolean running;
 	
 	public YattaY() {
-		window = new Window(WIDTH, HEIGHT, "YattaY", 1);
+		window = new Window(WIDTH, HEIGHT, "YattaY", 1, false);
 		GL.createCapabilities();
 		System.out.println("OpenGL: " + glGetString(GL_VERSION));
 		glEnable(GL_BLEND);
@@ -44,7 +44,7 @@ public class YattaY {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		this.camera.lookThrough();
 		this.masterRenderer.render(camera, level);
-		window.swapBuffers();
+		window.update();
 	}
 	
 	public void update() {
@@ -90,7 +90,7 @@ public class YattaY {
 			if (error != GL_NO_ERROR)
 				System.out.println("Error " + error);
 			
-			if (glfwWindowShouldClose(window.getID()) == GL_TRUE)
+			if (glfwWindowShouldClose(window.getID()))
 				running  = false;
 		}
 
