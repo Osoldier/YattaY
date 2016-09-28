@@ -23,4 +23,4 @@ This file format is meant to carry all the informations about a level for the ga
 |Height | 200  |
 |SpawnRed| 0x0000005A 0x00000500 (X&Y)|
 |SpawnBlue|0x00000300 0x00000500 (X&Y)|
-|Blocks | All blocks in the level|
+|Blocks | 0x0 0x4 0x3 0xA 0x2 0x7 0x9...|
