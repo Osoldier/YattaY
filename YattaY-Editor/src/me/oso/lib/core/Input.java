@@ -20,4 +20,8 @@ public class Input extends GLFWKeyCallback {
 	public static boolean isKeyPressed(int keycode) {
 		return keys[keycode] == GLFW.GLFW_PRESS;
 	}
+	
+	public static boolean isKeyReleased(int keycode) {
+		return keys[keycode] == GLFW.GLFW_RELEASE;
+	}
 }

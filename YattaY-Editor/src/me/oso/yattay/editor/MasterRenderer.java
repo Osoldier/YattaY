@@ -1,11 +1,13 @@
 package me.oso.yattay.editor;
 
 
-import me.oso.lib.graphics.*;
+import me.oso.lib.graphics.Camera2d;
 import me.oso.lib.math.ProjectionMatrix;
+import me.oso.yattay.editor.mask.Mask;
 import me.oso.yattay.ui.Menu;
 import me.oso.yattay.ui.UIRenderer;
-import me.oso.yattay.world.*;
+import me.oso.yattay.world.Level;
+import me.oso.yattay.world.LevelRenderer;
 
 /**
  * Created by Thomas on 26 sept. 2016
@@ -30,7 +32,7 @@ public class MasterRenderer {
 		levelRenderer.renderLevel(c, l);
 	}
 	
-	public void renderMask(int x, int y, BlockType type) {
+	public void renderMask(Mask m) {
 		
 	}
 }

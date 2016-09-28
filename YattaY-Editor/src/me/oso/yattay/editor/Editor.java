@@ -3,13 +3,20 @@ package me.oso.yattay.editor;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-import org.lwjgl.opengl.*;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL13;
 
-import me.oso.lib.core.*;
-import me.oso.lib.graphics.*;
-import me.oso.yattay.editor.ui.*;
-import me.oso.yattay.ui.*;
-import me.oso.yattay.world.*;
+import me.oso.lib.core.Input;
+import me.oso.lib.core.MouseHandler;
+import me.oso.lib.core.Window;
+import me.oso.lib.graphics.Camera2d;
+import me.oso.yattay.editor.mask.Mask;
+import me.oso.yattay.editor.ui.BtnBlock;
+import me.oso.yattay.ui.Menu;
+import me.oso.yattay.world.Block;
+import me.oso.yattay.world.BlockType;
+import me.oso.yattay.world.Level;
+import me.oso.yattay.world.LevelRenderer;
 
 /**
  * Editor.java
@@ -31,6 +38,7 @@ public class Editor {
 	private MasterRenderer masterRenderer;
 	private Menu blocMenu;
 	private Level level;
+	private Mask mask;
 
 	public Editor() {
 		window = new Window(WIDTH, HEIGHT, "YattaY Editor", 1, false);
@@ -50,6 +58,7 @@ public class Editor {
 		this.level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT);
 		this.level.generate();
 		this.camera = new Camera2d(0, 70 * 16);
+		this.mask = new Mask();
 	}
 
 	private void buildMenu() {
@@ -67,31 +76,59 @@ public class Editor {
 		this.camera.lookThrough();
 		this.masterRenderer.renderUI(blocMenu);
 		this.masterRenderer.renderLevel(camera, level);
-		this.masterRenderer.renderMask((int) Math.floor((camera.getPosition().x + window.getMouseX()) / Block.SIZE), (int) Math.floor((camera.getPosition().y + window.getMouseY()) / Block.SIZE), BtnBlock.getLastSelectedType());
+		this.masterRenderer.renderMask(mask);
 		window.update();
 	}
+
+	boolean released2 = true;
+	boolean released1 = true;
 
 	public void update() {
 		glfwPollEvents();
 		this.blocMenu.update();
-		//move
-		if(Input.isKeyDown(GLFW_KEY_LEFT)) {
+		// move
+		if (Input.isKeyDown(GLFW_KEY_LEFT)) {
 			camera.getPosition().x -= 5f;
-		} else if(Input.isKeyDown(GLFW_KEY_RIGHT)) {
-			camera.getPosition().x += 5f;	
+		} else if (Input.isKeyDown(GLFW_KEY_RIGHT)) {
+			camera.getPosition().x += 5f;
 		}
-		if(Input.isKeyDown(GLFW_KEY_UP)) {
+		if (Input.isKeyDown(GLFW_KEY_UP)) {
 			camera.getPosition().y -= 5f;
-		} else if(Input.isKeyDown(GLFW_KEY_DOWN)) {
-			camera.getPosition().y += 5f;	
+		} else if (Input.isKeyDown(GLFW_KEY_DOWN)) {
+			camera.getPosition().y += 5f;
 		}
-		//block placement
-		if(MouseHandler.isButtonDown(0)) {
-			if(window.getMouseX() > LevelRenderer.LEFT_OFFSET) {
-				int x = (int)Math.floor((camera.getPosition().x+window.getMouseX()+Block.SIZE/2) / Block.SIZE);
-				int y = (int)Math.floor((camera.getPosition().y+window.getMouseY()+Block.SIZE/2) / Block.SIZE);
-				if(x > 0 && x < LEVEL_WIDTH && y > 0 && y < LEVEL_HEIGHT) {
-					level.getLevel()[x][y].setType(BtnBlock.getLastSelectedType());
+
+		if (Input.isKeyPressed(GLFW_KEY_2)) {
+			if (released2) {
+				this.mask.setSize(mask.getSize() + 2);
+				released2 = false;
+			}
+		} else {
+			released2 = true;
+		}
+
+		if (Input.isKeyPressed(GLFW_KEY_1)) {
+			if (released1) {
+				this.mask.setSize(Math.max(1, mask.getSize() - 2));
+				released1 = false;
+			}
+		} else {
+			released1 = true;
+		}
+		// update mask info
+		this.mask.setX((int) Math.floor((camera.getPosition().x + window.getMouseX() + Block.SIZE / 2) / Block.SIZE));
+		this.mask.setY((int) Math.floor((camera.getPosition().y + window.getMouseY() + Block.SIZE / 2) / Block.SIZE));
+		this.mask.setBt(BtnBlock.getLastSelectedType());
+
+		// block placement
+		if (MouseHandler.isButtonDown(0)) {
+			if (window.getMouseX() > LevelRenderer.LEFT_OFFSET) {
+				if (mask.getX() > 0 && mask.getX() < LEVEL_WIDTH && mask.getY() > 0 && mask.getY() < LEVEL_HEIGHT) {
+					for (int i = -(mask.getSize() / 2); i <= (mask.getSize() / 2); i++) {
+						for (int j = -(mask.getSize() / 2); j <= (mask.getSize() / 2); j++) {
+							this.level.getLevel()[mask.getX() + i][mask.getY() + j].setType(mask.getBt());
+						}
+					}
 				}
 			}
 		}
@@ -102,7 +139,7 @@ public class Editor {
 
 		long lastTime = System.nanoTime();
 		double delta = 0.0;
-		double ns = 1000000000.0 / 240.0;
+		double ns = 1000000000.0 / 60.0;
 		long timer = System.currentTimeMillis();
 		int updates = 0;
 		int frames = 0;
