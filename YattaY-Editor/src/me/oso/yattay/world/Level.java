@@ -2,6 +2,7 @@ package me.oso.yattay.world;
 
 /**
  * Level.java
+ * 
  * @author Ibanez Thomas
  * @date 18 sept. 2016
  */
@@ -20,13 +21,13 @@ public class Level {
 	public Level(int width, int height) {
 		this.level = new Block[width][height];
 	}
-	
+
 	public void generate() {
 		for (int i = 0; i < level.length; i++) {
 			for (int j = 0; j < level[i].length; j++) {
 				level[i][j] = new Block(BlockType.AIR);
 			}
 		}
-		System.out.println("Generated "+level.length+" x "+level[0].length+" level"); 
+		System.out.println("Generated " + level.length + " x " + level[0].length + " level");
 	}
 }

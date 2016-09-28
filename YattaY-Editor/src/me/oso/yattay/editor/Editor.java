@@ -32,6 +32,8 @@ public class Editor {
 	public static final int BTN_SIZE = 32;
 	public static final int BTN_PER_LINE = 4;
 
+	public double delta;
+
 	private static Window window;
 	private Camera2d camera;
 	private boolean running;
@@ -57,7 +59,7 @@ public class Editor {
 		buildMenu();
 		this.level = new Level(LEVEL_WIDTH, LEVEL_HEIGHT);
 		this.level.generate();
-		this.camera = new Camera2d(0, 70 * 16);
+		this.camera = new Camera2d(0, 8);
 		this.mask = new Mask();
 	}
 
@@ -85,6 +87,7 @@ public class Editor {
 
 	public void update() {
 		glfwPollEvents();
+		//check for menu events
 		this.blocMenu.update();
 		// move
 		if (Input.isKeyDown(GLFW_KEY_LEFT)) {
@@ -98,6 +101,7 @@ public class Editor {
 			camera.getPosition().y += 5f;
 		}
 
+		//change brush size
 		if (Input.isKeyPressed(GLFW_KEY_2)) {
 			if (released2) {
 				this.mask.setSize(mask.getSize() + 2);
@@ -118,16 +122,19 @@ public class Editor {
 		// update mask info
 		this.mask.setX((int) Math.floor((camera.getPosition().x + window.getMouseX() + Block.SIZE / 2) / Block.SIZE));
 		this.mask.setY((int) Math.floor((camera.getPosition().y + window.getMouseY() + Block.SIZE / 2) / Block.SIZE));
+
+		this.mask.getRenderPosition().x = mask.getX() * Block.SIZE - camera.getPosition().x;
+		this.mask.getRenderPosition().y = mask.getY() * Block.SIZE - camera.getPosition().y;
+
 		this.mask.setBt(BtnBlock.getLastSelectedType());
 
 		// block placement
 		if (MouseHandler.isButtonDown(0)) {
 			if (window.getMouseX() > LevelRenderer.LEFT_OFFSET) {
-				if (mask.getX() > 0 && mask.getX() < LEVEL_WIDTH && mask.getY() > 0 && mask.getY() < LEVEL_HEIGHT) {
-					for (int i = -(mask.getSize() / 2); i <= (mask.getSize() / 2); i++) {
-						for (int j = -(mask.getSize() / 2); j <= (mask.getSize() / 2); j++) {
+				for (int i = -(mask.getSize() / 2); i <= (mask.getSize() / 2); i++) {
+					for (int j = -(mask.getSize() / 2); j <= (mask.getSize() / 2); j++) {
+						if (mask.getX() + i >= 0 && mask.getX() + i < LEVEL_WIDTH && mask.getY() + j >= 0 && mask.getY() + j < LEVEL_HEIGHT)
 							this.level.getLevel()[mask.getX() + i][mask.getY() + j].setType(mask.getBt());
-						}
 					}
 				}
 			}
@@ -138,8 +145,8 @@ public class Editor {
 		running = true;
 
 		long lastTime = System.nanoTime();
-		double delta = 0.0;
-		double ns = 1000000000.0 / 60.0;
+		delta = 0.0;
+		double ns = 1000000000.0 / 120.0;
 		long timer = System.currentTimeMillis();
 		int updates = 0;
 		int frames = 0;
