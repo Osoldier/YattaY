@@ -8,6 +8,8 @@ package me.oso.yattay.world;
  */
 public class Level {
 
+	private int blueX, blueY, redX, redY;
+	
 	public Block[][] getLevel() {
 		return level;
 	}
@@ -29,5 +31,37 @@ public class Level {
 			}
 		}
 		System.out.println("Generated " + level.length + " x " + level[0].length + " level");
+	}
+
+	public int getBlueX() {
+		return blueX;
+	}
+
+	public void setBlueX(int blueX) {
+		this.blueX = blueX;
+	}
+
+	public int getBlueY() {
+		return blueY;
+	}
+
+	public void setBlueY(int blueY) {
+		this.blueY = blueY;
+	}
+
+	public int getRedX() {
+		return redX;
+	}
+
+	public void setRedX(int redX) {
+		this.redX = redX;
+	}
+
+	public int getRedY() {
+		return redY;
+	}
+
+	public void setRedY(int redY) {
+		this.redY = redY;
 	}
 }
