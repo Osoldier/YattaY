@@ -3,6 +3,8 @@ package me.oso.yattay.editor;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
+import java.nio.channels.FileChannel;
+
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL13;
 
@@ -12,6 +14,8 @@ import me.oso.lib.core.Window;
 import me.oso.lib.graphics.Camera2d;
 import me.oso.yattay.editor.mask.Mask;
 import me.oso.yattay.editor.ui.BtnBlock;
+import me.oso.yattay.file.FileChooser;
+import me.oso.yattay.file.Saver;
 import me.oso.yattay.ui.Menu;
 import me.oso.yattay.world.Block;
 import me.oso.yattay.world.BlockType;
@@ -26,7 +30,7 @@ import me.oso.yattay.world.LevelRenderer;
  */
 public class Editor {
 
-	public static final String TEX_PATH = "res/textures/";
+	public static final String TEX_PATH = "src/res/textures/";
 	public static final int WIDTH = 1365, HEIGHT = 768;
 	public static final int LEVEL_WIDTH = 1000, LEVEL_HEIGHT = 200;
 	public static final int BTN_SIZE = 32;
@@ -100,7 +104,6 @@ public class Editor {
 		} else if (Input.isKeyDown(GLFW_KEY_DOWN)) {
 			camera.getPosition().y += 5f;
 		}
-
 		//change brush size
 		if (Input.isKeyPressed(GLFW_KEY_2)) {
 			if (released2) {
@@ -110,7 +113,6 @@ public class Editor {
 		} else {
 			released2 = true;
 		}
-
 		if (Input.isKeyPressed(GLFW_KEY_1)) {
 			if (released1) {
 				this.mask.setSize(Math.max(1, mask.getSize() - 2));
@@ -138,6 +140,11 @@ public class Editor {
 					}
 				}
 			}
+		}
+		
+		//saving
+		if(Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input.isKeyPressed(GLFW_KEY_S)) {
+			Saver.Save(this.level, FileChooser.choose("ymf"));
 		}
 	}
 

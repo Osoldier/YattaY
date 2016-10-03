@@ -39,7 +39,7 @@ public class LevelRenderer {
 		positionVBO = glGenBuffers();
 		this.textures = new LinkedList<Float>();
 		texVBO = glGenBuffers();
-		atlas = new Texture("res/textures/blocks.png");
+		atlas = new Texture("src/res/textures/blocks.png");
 		bShader.setUniform(bShader.getUniformLocation("LEFT_OFFSET"), LEFT_OFFSET);
 	}
 

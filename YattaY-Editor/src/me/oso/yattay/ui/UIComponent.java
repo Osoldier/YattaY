@@ -1,5 +1,6 @@
 package me.oso.yattay.ui;
 
+import libs.thinmatrix.fontMeshCreator.GUIText;
 import me.oso.lib.graphics.Model;
 import me.oso.lib.graphics.Shader;
 import me.oso.lib.graphics.Texture;
@@ -16,7 +17,8 @@ public abstract class UIComponent {
 	private Vector2f size;
 	private Model model;
 	private Shader shader;
-	
+	private GUIText guiText;
+
 	protected static final float[] vertices = {
 			-0.5f, -0.5f,
 			0.5f, -0.5f,
@@ -77,5 +79,11 @@ public abstract class UIComponent {
 	}
 	protected void setShader(Shader shader) {
 		this.shader = shader;
+	}
+	public GUIText getGuiText() {
+		return guiText;
+	}
+	public void setGuiText(GUIText guiText) {
+		this.guiText = guiText;
 	}
 }
