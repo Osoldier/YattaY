@@ -4,14 +4,19 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.nio.channels.FileChannel;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL14;
+import org.lwjgl.stb.STBImage;
 
 public class Texture {
 
@@ -20,11 +25,11 @@ public class Texture {
 	private static final int BYTES_PER_PIXEL = 4;// 3 for RGB, 4 for RGBA
 
 	public Texture(String pLocation, float bias) {
-		this.id = loadTexture(loadImage(pLocation), true, bias);
+		this.id = loadTexture(pLocation);
 	}
 
 	public Texture(String pLocation) {
-		this.id = loadTexture(loadImage(pLocation), false, 0);
+		this.id = loadTexture(pLocation);
 	}
 
 	public Texture(int id) {
@@ -48,6 +53,7 @@ public class Texture {
 		glBindTexture(GL_TEXTURE_2D, GL13.GL_TEXTURE0);
 	}
 
+	/*
 	private int loadTexture(BufferedImage image, boolean mipmap, float bias) {
 
 		int[] pixels = new int[image.getWidth() * image.getHeight()];
@@ -90,17 +96,65 @@ public class Texture {
 		// Return the texture ID so we can bind it later again
 		return textureID;
 	}
+	*/
+	
+	public int loadTexture(String filename){
+	    ByteBuffer imageBuffer;
+	    int width, height, comp;
+	    try{
+	        imageBuffer = readFile(filename);
+	    }
+	    catch (IOException e) {
+	        throw new RuntimeException(e);
+	    }
 
-	private BufferedImage loadImage(String loc) {
-		BufferedImage img = null;
-		try {
-			// Main class
-			img = ImageIO.read(ClassLoader.getSystemResourceAsStream(loc));
-		} catch (IOException e) {
-			// Error Handling Here
-			e.printStackTrace();
-		}
-		return img;
+	    IntBuffer w = BufferUtils.createIntBuffer(1);
+	    IntBuffer h = BufferUtils.createIntBuffer(1);
+	    IntBuffer compa = BufferUtils.createIntBuffer(1);
+
+	    ByteBuffer image = STBImage.stbi_load_from_memory(imageBuffer, w, h, compa, 0);
+	    if(image == null){
+	        throw new RuntimeException("Failed to load image: " + STBImage.stbi_failure_reason());
+	    }
+
+	    width = w.get(0);
+	    height = h.get(0);
+	    comp = compa.get(0);
+
+	    int id = glGenTextures();
+	    glBindTexture(GL_TEXTURE_2D, id);
+	    
+	    if(comp == 3){
+	        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	    }
+	    else{
+	        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+
+	        glEnable(GL_BLEND);
+	        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	    }
+
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	    return id;
+	}
+
+	private ByteBuffer readFile(String resource) throws IOException{
+	    File file = new File(resource);
+
+	    FileInputStream fis = new FileInputStream(file);
+	    FileChannel fc = fis.getChannel();
+
+	    ByteBuffer buffer = BufferUtils.createByteBuffer((int) fc.size() + 1);
+
+	    while(fc.read(buffer) != -1);
+
+	    fis.close();
+	    fc.close();
+	    buffer.flip();
+
+	    return buffer;
 	}
 
 	public int getId() {
