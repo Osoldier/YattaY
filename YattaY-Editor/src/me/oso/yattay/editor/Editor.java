@@ -3,24 +3,15 @@ package me.oso.yattay.editor;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
-import java.nio.channels.FileChannel;
+import org.lwjgl.opengl.*;
 
-import org.lwjgl.opengl.GL;
-import org.lwjgl.opengl.GL13;
-
-import me.oso.lib.core.Input;
-import me.oso.lib.core.MouseHandler;
-import me.oso.lib.core.Window;
-import me.oso.lib.graphics.Camera2d;
-import me.oso.yattay.editor.mask.Mask;
-import me.oso.yattay.editor.ui.BtnBlock;
-import me.oso.yattay.file.FileChooser;
-import me.oso.yattay.file.Saver;
-import me.oso.yattay.ui.Menu;
-import me.oso.yattay.world.Block;
-import me.oso.yattay.world.BlockType;
-import me.oso.yattay.world.Level;
-import me.oso.yattay.world.LevelRenderer;
+import me.oso.lib.core.*;
+import me.oso.lib.graphics.*;
+import me.oso.yattay.editor.mask.*;
+import me.oso.yattay.editor.ui.*;
+import me.oso.yattay.file.*;
+import me.oso.yattay.ui.*;
+import me.oso.yattay.world.*;
 
 /**
  * Editor.java
@@ -83,6 +74,7 @@ public class Editor {
 		this.masterRenderer.renderUI(blocMenu);
 		this.masterRenderer.renderLevel(camera, level);
 		this.masterRenderer.renderMask(mask);
+
 		window.update();
 	}
 
@@ -141,10 +133,18 @@ public class Editor {
 				}
 			}
 		}
-		
+
 		//saving
-		if(Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input.isKeyPressed(GLFW_KEY_S)) {
-			Saver.Save(this.level, FileChooser.choose("ymf"));
+		if (Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input.isKeyPressed(GLFW_KEY_S)) {
+			String path = FileChooser.choose("ymf");
+			if (path != null)
+				LevelParser.save(this.level, path);
+		}
+
+		if (Input.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && Input.isKeyPressed(GLFW_KEY_O)) {
+			String path = FileChooser.choose("ymf");
+			if (path != null)
+				this.level = LevelParser.load(path);
 		}
 	}
 

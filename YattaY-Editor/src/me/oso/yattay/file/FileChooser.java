@@ -15,8 +15,9 @@ public class FileChooser {
 		JFileChooser fileopen = new JFileChooser();
 	    FileNameExtensionFilter filter = new FileNameExtensionFilter("YattaY files", fileFilter);
 	    fileopen.addChoosableFileFilter(filter);
-
-	    int ret = fileopen.showDialog(null, "Open file");
+	    fileopen.setFileFilter(filter);
+	    
+	    int ret = fileopen.showDialog(null, "Choose file");
 
 	    if (ret == JFileChooser.APPROVE_OPTION) {
 	      File file = fileopen.getSelectedFile();
