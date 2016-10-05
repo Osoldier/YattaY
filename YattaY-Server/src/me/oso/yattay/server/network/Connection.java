@@ -1,7 +1,9 @@
-package me.oso.yattay.network.server;
+package me.oso.yattay.server.network;
 
 import java.io.*;
 import java.net.*;
+
+import me.oso.yattay.server.core.Server;
 
 /**
  * Connexion.java
@@ -29,18 +31,20 @@ public class Connection extends Thread {
 
 			while (!socket.isClosed()) {
 				message = inFromClient.readLine();
-				if(message == null || message == "-1") {
+				if (message == null || message == "" || message == "-1") {
 					shutDown();
+				} else {
+					Server.getLog().info(message + " from " + socket.getInetAddress());
 				}
-				Server.getLog().info(message+" from "+socket.getInetAddress());
 			}
 		} catch (IOException e1) {
-			//Let the socket close
+			// Let the socket close
 		}
 	}
 
 	public void shutDown() {
 		try {
+			Server.getLog().info("Client "+socket.getInetAddress()+" disconnected");
 			socket.close();
 			inFromClient.close();
 			outToClient.close();

@@ -1,4 +1,4 @@
-package me.oso.yattay.network.server;
+package me.oso.yattay.server.core;
 
 import java.util.logging.*;
 

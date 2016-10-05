@@ -1,8 +1,10 @@
-package me.oso.yattay.network.server;
+package me.oso.yattay.server.network;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import me.oso.yattay.server.core.Server;
 
 /**
  * NetListener.java
@@ -14,10 +16,14 @@ public class NetListener extends Thread {
 	private boolean running;
 	private ServerSocket coSocket;
 	private List<Connection> connections;
+	private final int PORT;
+	private final int MAX_QUEUE = 100;
+	private String ip;
 
-
-	public NetListener() {
+	public NetListener(String ip, int port) {
 		this.setName("Net listener");
+		this.PORT = port;
+		this.ip = ip;
 	}
 	
 	@Override
@@ -25,7 +31,8 @@ public class NetListener extends Thread {
 		running = true;
 		
 		try {
-			coSocket = new ServerSocket(Server.PORT);
+			coSocket = new ServerSocket(PORT, MAX_QUEUE, InetAddress.getByName(ip));
+			
 			connections = new LinkedList<Connection>();
 			running = true;
 		} catch (IOException e) {

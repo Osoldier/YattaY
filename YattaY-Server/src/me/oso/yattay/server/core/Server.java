@@ -1,7 +1,11 @@
-package me.oso.yattay.network.server;
+package me.oso.yattay.server.core;
 
 import java.io.*;
 import java.util.logging.*;
+
+import me.oso.yattay.server.file.ConfigParser;
+import me.oso.yattay.server.network.Connection;
+import me.oso.yattay.server.network.NetListener;
 
 /**
  * Server.java
@@ -13,10 +17,12 @@ public class Server {
 
 	private static Logger log;
 	private NetListener netListener;
-	public final static int PORT = 5675;
-
+	private ConfigParser config;
+	private final String CONF_FILE = "server.conf";
+	
 	public Server() {
-		this.netListener = new NetListener();
+		this.config = new ConfigParser(CONF_FILE);
+		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
 	}
 
 	public void start() {
