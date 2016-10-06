@@ -23,6 +23,15 @@ public class Level {
 	public Level(int width, int height) {
 		this.level = new Block[width][height];
 	}
+	
+	public Level(Level l) {
+		this(l.level.length, l.level[0].length);
+		for (int i = 0; i < level.length; i++) {
+			for (int j = 0; j < level[0].length; j++) {
+				level[i][j] = new Block(l.level[i][j].getType());
+			}
+		}
+	}
 
 	public void generate() {
 		for (int i = 0; i < level.length; i++) {

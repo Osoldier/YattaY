@@ -32,7 +32,7 @@ public class NetListener extends Thread {
 		
 		try {
 			coSocket = new ServerSocket(PORT, MAX_QUEUE, InetAddress.getByName(ip));
-			
+
 			connections = new LinkedList<Connection>();
 			running = true;
 		} catch (IOException e) {

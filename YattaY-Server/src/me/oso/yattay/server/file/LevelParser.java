@@ -55,7 +55,6 @@ public class LevelParser {
 			byte[] int32 = new byte[4];
 			inFile.read(version);
 			if(version[0] <= VERSION) {
-				System.out.println("Version: "+version[0]);
 				inFile.read(int32);
 				int width = ByteBuffer.wrap(int32).getInt();
 				inFile.read(int32);
