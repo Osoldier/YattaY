@@ -3,7 +3,7 @@ package me.oso.yattay.server.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
@@ -23,22 +23,32 @@ import me.oso.yattay.world.Level;
  */
 public class Server {
 
+	//Logger object used to log messages
 	private static Logger log;
+	//Listener for incoming connection
 	private NetListener netListener;
+	//Config file parser
 	private ConfigParser config;
+	//All the instances of game being played simultaneously
 	private Game[] games;
+	//All map files (read from config)
 	private String[] mapFiles;
+	
+	//Queue of task to be executed
+	private static Queue<Task> todo;
 	
 	private final String CONF_FILE = "server.conf";
 	private final String MAP_DIR = "maps/";
 	
-	private static Queue<Task> todo;
+	public static final double TICKRATE = 128.0;
 	
 	public Server() {
+		//Init objects
 		this.config = new ConfigParser(CONF_FILE);
 		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
-		todo = new LinkedList<Task>();
+		todo = new PriorityQueue<Task>();
 		
+		//Init instances
 		this.games = new Game[Integer.parseInt(this.config.getAttribute("max-instances"))];
 		this.mapFiles = this.config.getAttribute("maps").replace(" ", "").split(",");
 		Level m1 = LevelParser.load(MAP_DIR+this.mapFiles[0]+".ymf");
@@ -50,6 +60,9 @@ public class Server {
 		games[0].start();
 	}
 
+	/**
+	 * Starts the server, opens the socket and parse commands
+	 */
 	public void start() {
 		log.info("Server started");
 		this.netListener.start();
@@ -69,6 +82,9 @@ public class Server {
 		dispose();
 	}
 
+	/**
+	 * Stops the server, close all connections
+	 */
 	public void dispose() {
 		log.info("Shutting down server...");
 		this.netListener.setRunning(false);

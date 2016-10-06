@@ -12,8 +12,14 @@ public class LevelParser {
 
 	private static final byte VERSION = 0;
 
+	/**
+	 * Saves a level to a file
+	 * @param l the level to save
+	 * @param filename the file to write
+	 */
 	public static void save(Level l, String filename) {
 		File file = new File(filename + ".ymf");
+		//header bytes
 		byte[] header = ByteBuffer.allocate(1).put(VERSION).array();
 		byte[] width = ByteBuffer.allocate(4).putInt(l.getLevel().length).array();
 		byte[] height = ByteBuffer.allocate(4).putInt(l.getLevel()[0].length).array();
@@ -28,6 +34,7 @@ public class LevelParser {
 			fos.write(height, 0, height.length);
 			fos.write(sr, 0, sr.length);
 			fos.write(sb, 0, sb.length);
+			//foreach block, write the type
 			for (int i = 0; i < l.getLevel().length; i++) {
 				for (int j = 0; j < l.getLevel()[0].length; j++) {
 					byte[] block = ByteBuffer.allocate(4).putInt(l.getLevel()[i][j].getType().getTexture()).array();
@@ -41,6 +48,11 @@ public class LevelParser {
 		}
 	}
 
+	/**
+	 * Loads a level from a file
+	 * @param filename the file to load from
+	 * @return the loaded level
+	 */
 	public static Level load(String filename) {
 		File file = new File(filename);
 		FileInputStream inFile = null;

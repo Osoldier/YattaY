@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 
 import me.oso.yattay.server.core.Server;
+import me.oso.yattay.server.task.CommandParser;
 
 /**
  * Connexion.java
@@ -31,10 +32,12 @@ public class Connection extends Thread {
 
 			while (!socket.isClosed()) {
 				message = inFromClient.readLine();
+				//if the client closed the connection remotely
 				if (message == null || message == "" || message == "-1") {
 					shutDown();
 				} else {
-					Server.getLog().info(message + " from " + socket.getInetAddress());
+					//add the incoming command to the todo list (verified by the parser)
+					Server.getTodo().add(CommandParser.Parse(message));
 				}
 			}
 		} catch (IOException e1) {

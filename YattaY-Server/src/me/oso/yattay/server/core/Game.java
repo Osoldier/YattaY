@@ -22,13 +22,36 @@ public class Game extends Thread {
 	
 	@Override
 	public void run() {
+		
+		running = true;
+		
+		long lastTime = System.nanoTime();
+		double delta = 0.0;
+		double ns = 1000000000.0 / Server.TICKRATE;
+		long timer = System.currentTimeMillis();
+		int updates = 0;
+		
 		while (running) {
-			
+			long now = System.nanoTime();
+			delta += (now - lastTime) / ns;
+			lastTime = now;
+			if (delta >= 1.0) {
+				update();
+				updates++;
+				delta--;
+			}
+			if (System.currentTimeMillis() - timer > 1000) {
+				timer += 1000;
+				if(updates < Server.TICKRATE-5)
+					Server.getLog().warning("Tickrate is lower than expected, maybe the server is overloaded");
+				updates = 0;
+			}
 		}
 	}
 	
+	
 	public void update() {
-		 
+		
 	}
 
 	public Player[] getRed() {

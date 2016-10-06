@@ -16,9 +16,10 @@ public class NetListener extends Thread {
 	private boolean running;
 	private ServerSocket coSocket;
 	private List<Connection> connections;
+	private String ip;
+	
 	private final int PORT;
 	private final int MAX_QUEUE = 100;
-	private String ip;
 
 	public NetListener(String ip, int port) {
 		this.setName("Net listener");

@@ -22,7 +22,7 @@ public class ConfigParser {
         try {
             br = new BufferedReader(new FileReader(file));
             String line = "";
-
+            //Reads each line and add the property to the hashmap
             while ((line = br.readLine()) != null) {
             	String[] kv = line.split(":");
             	if(kv.length == 2) {
