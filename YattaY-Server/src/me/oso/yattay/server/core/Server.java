@@ -3,6 +3,7 @@ package me.oso.yattay.server.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.logging.ConsoleHandler;
@@ -46,7 +47,12 @@ public class Server {
 		//Init objects
 		this.config = new ConfigParser(CONF_FILE);
 		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
-		todo = new PriorityQueue<Task>();
+		todo = new PriorityQueue<>(new Comparator<Task>() {
+			@Override
+			public int compare(Task o1, Task o2) {
+				return Integer.compare(o1.getType().getPriority(), o2.getType().getPriority());
+			}
+		});
 		
 		//Init instances
 		this.games = new Game[Integer.parseInt(this.config.getAttribute("max-instances"))];
@@ -75,6 +81,12 @@ public class Server {
 				if(input.equals("stop")) {
 					break;
 				}
+				
+				for (Connection c : netListener.getConnections()) {
+					if(c.getSocket().isClosed()) {
+						
+					}
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -96,6 +108,11 @@ public class Server {
 		} catch (IOException e) {
 			//Log nothing because an IOEx at this point is normal
 		}
+		
+		for (Game game : games) {
+			game.setRunning(false);
+		}
+		
 		log.info("Server stopped !");
 	}
 

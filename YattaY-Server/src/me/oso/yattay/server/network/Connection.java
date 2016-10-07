@@ -1,10 +1,14 @@
 package me.oso.yattay.server.network;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 
 import me.oso.yattay.server.core.Server;
 import me.oso.yattay.server.task.CommandParser;
+import me.oso.yattay.server.task.Task;
 
 /**
  * Connexion.java
@@ -32,12 +36,15 @@ public class Connection extends Thread {
 
 			while (!socket.isClosed()) {
 				message = inFromClient.readLine();
-				//if the client closed the connection remotely
+				// if the client closed the connection remotely
 				if (message == null || message == "" || message == "-1") {
 					shutDown();
 				} else {
-					//add the incoming command to the todo list (verified by the parser)
-					Server.getTodo().add(CommandParser.Parse(message));
+					// add the incoming command to the todo list (verified by
+					// the parser)
+					Task t = CommandParser.Parse(message);
+					if (t != null)
+						Server.getTodo().add(t);
 				}
 			}
 		} catch (IOException e1) {
@@ -47,7 +54,7 @@ public class Connection extends Thread {
 
 	public void shutDown() {
 		try {
-			Server.getLog().info("Client "+socket.getInetAddress()+" disconnected");
+			Server.getLog().info("Client " + socket.getInetAddress() + " disconnected");
 			socket.close();
 			inFromClient.close();
 			outToClient.close();
