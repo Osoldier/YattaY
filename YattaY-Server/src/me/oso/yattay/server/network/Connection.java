@@ -42,7 +42,7 @@ public class Connection extends Thread {
 				} else {
 					// add the incoming command to the todo list (verified by
 					// the parser)
-					Task t = CommandParser.Parse(message);
+					Task t = CommandParser.ParseNetwork(message);
 					if (t != null)
 						Server.getTodo().add(t);
 				}
@@ -54,10 +54,10 @@ public class Connection extends Thread {
 
 	public void shutDown() {
 		try {
-			Server.getLog().info("Client " + socket.getInetAddress() + " disconnected");
 			socket.close();
 			inFromClient.close();
 			outToClient.close();
+			Server.getLog().info("Client " + socket.getInetAddress() + " disconnected");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

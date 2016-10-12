@@ -11,13 +11,11 @@ public class Game extends Thread {
 	private Level level;
 	private Player[] red, blue;
 	private boolean running;
-	private static final int MAX_PLAYERS_PER_TEAM = 5;
 	
-	
-	public Game(Level level) {
+	public Game(Level level, int maxPlayersTeam) {
 		this.level = level;
-		this.red = new Player[MAX_PLAYERS_PER_TEAM];
-		this.blue = new Player[MAX_PLAYERS_PER_TEAM];
+		this.red = new Player[maxPlayersTeam];
+		this.blue = new Player[maxPlayersTeam];
 	}
 	
 	@Override

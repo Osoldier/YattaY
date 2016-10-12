@@ -6,23 +6,25 @@ package me.oso.yattay.server.task;
 public enum TaskType {
 
 	//Connection-related tasks
-	JOIN_REQUEST(0, 1, false, 1), JOIN_ACCEPT(1, 1, true, 2), JOIN_DENY(2, 1, true, 1), KICK(3, 1, true, 1), QUIT_REQUEST(4, 1, false, 1),
-	QUIT_ACK(5, 1, true, 1),
+	JOIN_REQUEST(0, 1, false, 1, 0), JOIN_ACCEPT(1, 1, true, 2, 0), JOIN_DENY(2, 1, true, 1, 0), KICK(3, 1, false, 1, 0), QUIT_REQUEST(4, 1, false, 1, 0),
+	QUIT_ACK(5, 1, true, 1, 0),
 	//Level-related tasks
-	LVL_START(10, 2, true, 1), LVL_DIMS(11, 2, true, 3), BLOCK_INF(12, 2, true, 3), BLUE_SPAWN(13, 2, true, 3), RED_SPAWN(14, 2, true, 3),
+	LVL_START(10, 2, true, 1, 0), LVL_DIMS(11, 2, true, 3, 0), BLOCK_INF(12, 2, true, 3, 0), BLUE_SPAWN(13, 2, true, 3, 0), RED_SPAWN(14, 2, true, 3, 0),
 	//Server-related tasks
-	PING(20, 0, false, 2);
+	PING(20, 0, false, 2, 0);
 	
 	private int opcode;
 	private int priority;
 	private boolean fromServer;
 	private int minArgs;
+	private int perm;
 	
-	private TaskType(int opcode, int priority, boolean fromServer, int minArgs) {
+	private TaskType(int opcode, int priority, boolean fromServer, int minArgs, int perm) {
 		this.priority = priority;
 		this.fromServer = fromServer;
 		this.minArgs = minArgs;
 		this.opcode = opcode;
+		this.perm = perm;
 	}
 
 	public int getPriority() {
@@ -39,6 +41,10 @@ public enum TaskType {
 
 	public int getOpcode() {
 		return opcode;
+	}
+
+	public int getPerm() {
+		return perm;
 	}
 	
 }

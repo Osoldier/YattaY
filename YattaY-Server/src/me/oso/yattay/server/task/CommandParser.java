@@ -6,11 +6,11 @@ package me.oso.yattay.server.task;
 public class CommandParser {
 
 	/**
-	 * Converts a string command to an executable task
+	 * Converts a net command to an executable task
 	 * @param cmd the string command
 	 * @return new task or null if <b>cmd</b> was incorrect
 	 */
-	public static Task Parse(String cmd) {
+	public static Task ParseNetwork(String cmd) {
 		byte opcode = cmd.getBytes()[0];
 		String[] args = cmd.substring(1).split(";");
 		for(TaskType type : TaskType.values()) {
@@ -21,4 +21,7 @@ public class CommandParser {
 		return null;
 	}
 	
+	public static Task ParseInput(String cmd) {
+		
+	}
 }

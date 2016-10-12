@@ -25,6 +25,7 @@ public class NetListener extends Thread {
 		this.setName("Net listener");
 		this.PORT = port;
 		this.ip = ip;
+		connections = new LinkedList<Connection>();
 	}
 	
 	@Override
@@ -33,8 +34,6 @@ public class NetListener extends Thread {
 		
 		try {
 			coSocket = new ServerSocket(PORT, MAX_QUEUE, InetAddress.getByName(ip));
-
-			connections = new LinkedList<Connection>();
 			running = true;
 		} catch (IOException e) {
 			e.printStackTrace();
