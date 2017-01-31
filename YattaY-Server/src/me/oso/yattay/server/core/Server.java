@@ -14,6 +14,7 @@ import me.oso.yattay.server.file.ConfigParser;
 import me.oso.yattay.server.file.LevelParser;
 import me.oso.yattay.server.network.Connection;
 import me.oso.yattay.server.network.NetListener;
+import me.oso.yattay.server.task.CommandParser;
 import me.oso.yattay.server.task.Task;
 import me.oso.yattay.world.Level;
 
@@ -81,9 +82,7 @@ public class Server {
 			while (true) {
 				if (br.ready()) {
 					input = br.readLine();
-					if (input.equals("stop")) {
-						break;
-					}
+					CommandParser.ParseInput(input);
 				}
 
 				Iterator<Connection> iterator = netListener.getConnections().iterator();

@@ -22,6 +22,6 @@ public class CommandParser {
 	}
 	
 	public static Task ParseInput(String cmd) {
-		
+		return null;
 	}
 }
