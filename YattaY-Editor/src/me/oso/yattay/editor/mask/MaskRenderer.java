@@ -41,6 +41,7 @@ public class MaskRenderer {
 	public MaskRenderer(ProjectionMatrix pr) {	
 		this.mShader = new MaskShader(pr);
 		this.model = Loader.createGUIVAO(vertices, texCoords);
+		this.mShader.setUniform(this.mShader.getUniformLocation("LEFT_OFFSET"), LevelRenderer.LEFT_OFFSET); 
 	}
 	
 	public void renderMask(Mask m) {
