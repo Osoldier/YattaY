@@ -7,21 +7,26 @@ public class CommandParser {
 
 	/**
 	 * Converts a net command to an executable task
-	 * @param cmd the string command
+	 * 
+	 * @param cmd
+	 *            the string command
 	 * @return new task or null if <b>cmd</b> was incorrect
 	 */
 	public static Task ParseNetwork(String cmd) {
 		byte opcode = cmd.getBytes()[0];
 		String[] args = cmd.substring(1).split(";");
-		for(TaskType type : TaskType.values()) {
-			if(type.getOpcode() == (opcode & 0xFF)) {
-				return new Task(type, args);
+		for (TaskType type : TaskType.values()) {
+			if (type.getOpcode() == (opcode & 0xFF)) {
+				if (!type.isFromServer())
+					return new Task(type, args);
+				else
+					break;
 			}
 		}
 		return null;
 	}
-	
+
 	public static Task ParseInput(String cmd) {
-		
+		return null;
 	}
 }
