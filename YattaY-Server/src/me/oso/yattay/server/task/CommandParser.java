@@ -13,14 +13,16 @@ public class CommandParser {
 	 * @return new task or null if <b>cmd</b> was incorrect
 	 */
 	public static Task ParseNetwork(String cmd) {
-		byte opcode = cmd.getBytes()[0];
-		String[] args = cmd.substring(1).split(";");
-		for (TaskType type : TaskType.values()) {
-			if (type.getOpcode() == (opcode & 0xFF)) {
-				if (!type.isFromServer())
-					return new Task(type, args);
-				else
-					break;
+		if (cmd.getBytes().length >= 1) {
+			byte opcode = cmd.getBytes()[0];
+			String[] args = cmd.substring(1).split(";");
+			for (TaskType type : TaskType.values()) {
+				if (type.getOpcode() == (opcode & 0xFF)) {
+					if (!type.isFromServer())
+						return new Task(type, args);
+					else
+						break;
+				}
 			}
 		}
 		return null;

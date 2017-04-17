@@ -43,7 +43,9 @@ public class NetListener extends Thread {
 			try {
 				Socket clientSocket = coSocket.accept();
 				Connection co = new Connection(clientSocket);
-				connections.add(co);
+				synchronized (Server.connexionsMutex) {
+					connections.add(co);
+				}
 				co.start();
 				Server.getLog().info("Connected with " + clientSocket.getInetAddress());
 			} catch (IOException e) {

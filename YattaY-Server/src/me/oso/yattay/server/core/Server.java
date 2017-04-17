@@ -3,15 +3,11 @@ package me.oso.yattay.server.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
-import me.oso.yattay.server.file.ConfigParser;
-import me.oso.yattay.server.file.LevelParser;
+import me.oso.yattay.server.file.*;
 import me.oso.yattay.server.network.Connection;
 import me.oso.yattay.server.network.NetListener;
 import me.oso.yattay.server.task.CommandParser;
@@ -32,10 +28,19 @@ public class Server {
 	private NetListener netListener;
 	// Config file parser
 	private ConfigParser config;
+	//Server data file
+	private DataParser data;
 	// All the instances of game being played simultaneously
 	private Game[] games;
 	// All map files (read from config)
 	private String[] mapFiles;
+
+	private boolean running = true;
+	//Mutexs
+	public static Object connexionsMutex = new Object();
+	
+	//Server registered users
+	private Map<String, Integer> users;
 
 	// Queue of task to be executed
 	private static Queue<Task> todo;
@@ -48,14 +53,10 @@ public class Server {
 	public Server() {
 		// Init objects
 		this.config = new ConfigParser(CONF_FILE);
+		this.data = new DataParser("server.txt");
+		this.users = this.data.getRegistredUsers();
 		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
-		todo = new PriorityQueue<>(new Comparator<Task>() {
-			@Override
-			public int compare(Task o1, Task o2) {
-				return Integer.compare(o1.getType().getPriority(), o2.getType().getPriority());
-			}
-		});
-
+		todo = new PriorityQueue<>((Task o1, Task o2) -> Integer.compare(o1.getType().getPriority(), o2.getType().getPriority()));
 		// Init instances
 		this.games = new Game[Integer.parseInt(this.config.getAttribute("max-instances"))];
 		this.mapFiles = this.config.getAttribute("maps").replace(" ", "").split(",");
@@ -68,6 +69,12 @@ public class Server {
 		// start one instance
 		games[0].start();
 	}
+	
+	public void runTask(Task t) {
+		switch(t.getType()) {
+			
+		}
+	}
 
 	/**
 	 * Starts the server, opens the socket and parse commands
@@ -79,20 +86,26 @@ public class Server {
 			BufferedReader br = null;
 			br = new BufferedReader(new InputStreamReader(System.in));
 			String input;
-			while (true) {
+			while (running) {
 				if (br.ready()) {
 					input = br.readLine();
 					CommandParser.ParseInput(input);
 				}
-
-				Iterator<Connection> iterator = netListener.getConnections().iterator();
-				for (; iterator.hasNext();) {
-					Connection c = iterator.next();
-					if (c.getSocket().isClosed()) {
-						iterator.remove();
+				
+				if(!todo.isEmpty()) {
+					Task t = todo.poll();
+					runTask(t);
+				}
+				
+				synchronized (connexionsMutex) {
+					Iterator<Connection> iterator = netListener.getConnections().iterator();
+					for (; iterator.hasNext();) {
+						Connection c = iterator.next();
+						if (c.getSocket().isClosed()) {
+							iterator.remove();
+						}
 					}
 				}
-
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
