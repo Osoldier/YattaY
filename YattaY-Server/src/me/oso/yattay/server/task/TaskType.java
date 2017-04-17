@@ -6,7 +6,7 @@ package me.oso.yattay.server.task;
 public enum TaskType {
 
 	//Connection-related tasks
-	JOIN_REQUEST(0, 1, false, 1, 0), JOIN_ACCEPT(1, 1, true, 2, 0), JOIN_DENY(2, 1, true, 1, 0), KICK(3, 1, false, 1, 0), QUIT_REQUEST(4, 1, false, 1, 0),
+	JOIN_REQUEST(0, 1, false, 1, 0), JOIN_ACCEPT(1, 1, true, 3, 0), JOIN_DENY(2, 1, true, 1, 0), KICK(3, 1, false, 1, 0), QUIT_REQUEST(4, 1, false, 1, 0),
 	QUIT_ACK(5, 1, true, 1, 0),
 	//Level-related tasks
 	LVL_START(10, 2, true, 1, 0), LVL_DIMS(11, 2, true, 3, 0), BLOCK_INFO(12, 2, true, 3, 0), BLUE_SPAWN(13, 2, true, 3, 0), RED_SPAWN(14, 2, true, 3, 0),

@@ -4,6 +4,8 @@ import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 
+import me.oso.yattay.player.*;
+
 /**
  * DataParser.java
  * 
@@ -25,13 +27,13 @@ public class DataParser {
 		}
 	}
 	
-	public Map<String, Integer> getRegistredUsers() {
-		Map<String, Integer> users = new HashMap<String, Integer>();
+	public Map<String, PlayerStatus> getRegistredUsers() {
+		Map<String, PlayerStatus> users = new HashMap<String, PlayerStatus>();
 		try {
 			for (String s : Files.readAllLines(file.toPath())) {
 				String[] line = s.split(" ");
 				if(line[0].equals("uk")) {
-					users.put(line[1], Integer.parseInt(line[2]));
+					users.put(line[1], PlayerStatus.fromID(Integer.parseInt(line[2])));
 				}
 			}
 		} catch (IOException e) {

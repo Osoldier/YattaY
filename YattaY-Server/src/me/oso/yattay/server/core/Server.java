@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
 
+import me.oso.yattay.player.*;
 import me.oso.yattay.server.file.*;
 import me.oso.yattay.server.network.Connection;
 import me.oso.yattay.server.network.NetListener;
@@ -39,8 +40,8 @@ public class Server {
 	//Mutexs
 	public static Object connexionsMutex = new Object();
 	
-	//Server registered users
-	private Map<String, Integer> users;
+	//Server registered users(IP -> status)
+	private Map<String, PlayerStatus> users;
 
 	// Queue of task to be executed
 	private static Queue<Task> todo;
@@ -53,7 +54,7 @@ public class Server {
 	public Server() {
 		// Init objects
 		this.config = new ConfigParser(CONF_FILE);
-		this.data = new DataParser("server.txt");
+		this.data = new DataParser("serverdata.dat");
 		this.users = this.data.getRegistredUsers();
 		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
 		todo = new PriorityQueue<>((Task o1, Task o2) -> Integer.compare(o1.getType().getPriority(), o2.getType().getPriority()));
@@ -72,7 +73,30 @@ public class Server {
 	
 	public void runTask(Task t) {
 		switch(t.getType()) {
-			
+			case BLOCK_INFO:
+				break;
+			case BLUE_SPAWN:
+				break;
+			case JOIN_ACCEPT:
+				break;
+			case JOIN_DENY:
+				break;
+			case JOIN_REQUEST:
+				break;
+			case KICK:
+				break;
+			case LVL_DIMS:
+				break;
+			case LVL_START:
+				break;
+			case PING:
+				break;
+			case QUIT_ACK:
+				break;
+			case QUIT_REQUEST:
+				break;
+			case RED_SPAWN:
+				break;
 		}
 	}
 
