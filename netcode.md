@@ -25,7 +25,7 @@ TCP opcodes goes from 00 to 127
 | 12     | (userid) (blockid) (id)      | id-th block of the level is a blockid                 | Server | 2        | 0                |
 | 13     | (userid) (x) (y)             | Blue spawn is at (x,y)                                | Server | 2        | 0                |
 | 14     | (userid) (x) (y)             | Red spawn is at (x,y)                                 | Server | 2        | 0                |
-| 20     | (userid) (timestamp)         | ping / ping response                                  | Any    | 0        | 0                |
+| 20     | (timestamp)                  | ping / ping response                                  | Any    | 0        | 0                |
 
 ### UDP
 

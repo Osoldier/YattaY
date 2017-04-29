@@ -3,6 +3,7 @@ package me.oso.yattay.server.core;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.Instant;
 import java.util.*;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Logger;
@@ -13,6 +14,7 @@ import me.oso.yattay.server.network.Connection;
 import me.oso.yattay.server.network.NetListener;
 import me.oso.yattay.server.task.CommandParser;
 import me.oso.yattay.server.task.Task;
+import me.oso.yattay.server.task.TaskType;
 import me.oso.yattay.world.Level;
 
 /**
@@ -40,8 +42,10 @@ public class Server {
 	//Mutexs
 	public static Object connexionsMutex = new Object();
 	
-	//Server registered users(IP -> status)
+	//Server registered users(IP -> status) (may not be useful)
 	private Map<String, PlayerStatus> users;
+	
+	private Map<Integer, Connection> userIDs;
 
 	// Queue of task to be executed
 	private static Queue<Task> todo;
@@ -74,6 +78,7 @@ public class Server {
 	public void runTask(Task t) {
 		switch(t.getType()) {
 			case BLOCK_INFO:
+				
 				break;
 			case BLUE_SPAWN:
 				break;
@@ -110,7 +115,18 @@ public class Server {
 			BufferedReader br = null;
 			br = new BufferedReader(new InputStreamReader(System.in));
 			String input;
+			int pingCnt = 0;
+			double serverPeriodNS = ((double)1e9/(double)TICKRATE);
 			while (running) {
+				long start = System.nanoTime();
+				pingCnt++;
+				if(pingCnt == 5*TICKRATE) {
+					for (Connection cn : netListener.getConnections()) {
+						cn.getMessageList().add(new Task(TaskType.PING, String.valueOf(Instant.now().toEpochMilli())).toMessage());
+					}
+					pingCnt = 0;
+				}
+				
 				if (br.ready()) {
 					input = br.readLine();
 					CommandParser.ParseInput(input);
@@ -130,6 +146,13 @@ public class Server {
 						}
 					}
 				}
+				
+				try {
+					Thread.sleep((long) Math.max((serverPeriodNS-(System.nanoTime()-start))/1e6, 0));
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
