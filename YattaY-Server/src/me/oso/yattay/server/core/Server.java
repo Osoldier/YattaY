@@ -31,7 +31,7 @@ public class Server {
 	private NetListener netListener;
 	// Config file parser
 	private ConfigParser config;
-	//Server data file
+	// Server data file
 	private DataParser data;
 	// All the instances of game being played simultaneously
 	private Game[] games;
@@ -39,16 +39,17 @@ public class Server {
 	private String[] mapFiles;
 
 	private boolean running = true;
-	//Mutexs
+	// Mutexs
 	public static Object connexionsMutex = new Object();
-	
-	//Server registered users(IP -> status) (may not be useful)
-	private Map<String, PlayerStatus> users;
-	
-	private Map<Integer, Connection> userIDs;
 
+	private int MAX_PLAYERS;
+	// Server registered users(IP -> status) (may not be useful)
+	private Map<String, PlayerStatus> users;
+
+	private Map<Integer, Connection> usersConnections;
+	private List<Integer> usersIDs;
 	// Queue of task to be executed
-	private static Queue<Task> todo;
+	private static PriorityQueue<Task> todo;
 
 	private final String CONF_FILE = "server.conf";
 	private final String MAP_DIR = "maps/";
@@ -60,6 +61,7 @@ public class Server {
 		this.config = new ConfigParser(CONF_FILE);
 		this.data = new DataParser("serverdata.dat");
 		this.users = this.data.getRegistredUsers();
+		this.usersIDs = new ArrayList<>();
 		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
 		todo = new PriorityQueue<>((Task o1, Task o2) -> Integer.compare(o1.getType().getPriority(), o2.getType().getPriority()));
 		// Init instances
@@ -67,18 +69,17 @@ public class Server {
 		this.mapFiles = this.config.getAttribute("maps").replace(" ", "").split(",");
 		Level m1 = LevelParser.load(MAP_DIR + this.mapFiles[0] + ".ymf");
 		int mp = Integer.parseInt(this.config.getAttribute("max-players-team"));
-
+		this.MAX_PLAYERS = Integer.parseInt(this.config.getAttribute("max-instances")) * 2 * Integer.parseInt(this.config.getAttribute("max-players-team"));
 		for (int i = 0; i < games.length; i++) {
 			games[i] = new Game(new Level(m1), mp);
 		}
 		// start one instance
 		games[0].start();
 	}
-	
+
 	public void runTask(Task t) {
 		switch(t.getType()) {
 			case BLOCK_INFO:
-				
 				break;
 			case BLUE_SPAWN:
 				break;
@@ -87,6 +88,17 @@ public class Server {
 			case JOIN_DENY:
 				break;
 			case JOIN_REQUEST:
+				if(netListener.getConnections().size() < MAX_PLAYERS) {
+					int sess_id = 0;
+					boolean specificJoin = false;
+					if(t.getArgs().length == 2) {
+						sess_id = t.getArgI(1);
+					}
+					
+					if(sess_id >= 0 && sess_id < games.length) {
+						
+					}
+				}
 				break;
 			case KICK:
 				break;
@@ -102,6 +114,14 @@ public class Server {
 				break;
 			case RED_SPAWN:
 				break;
+			case TEAM_CHANGE_NOPE:
+				break;
+			case TEAM_CHANGE_OK:
+				break;
+			case TEAM_CHANGE_REQUEST:
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -116,27 +136,27 @@ public class Server {
 			br = new BufferedReader(new InputStreamReader(System.in));
 			String input;
 			int pingCnt = 0;
-			double serverPeriodNS = ((double)1e9/(double)TICKRATE);
+			double serverPeriodNS = ((double) 1e9 / (double) TICKRATE);
 			while (running) {
 				long start = System.nanoTime();
 				pingCnt++;
-				if(pingCnt == 5*TICKRATE) {
+				if (pingCnt == 5 * TICKRATE) {
 					for (Connection cn : netListener.getConnections()) {
 						cn.getMessageList().add(new Task(TaskType.PING, String.valueOf(Instant.now().toEpochMilli())).toMessage());
 					}
 					pingCnt = 0;
 				}
-				
+
 				if (br.ready()) {
 					input = br.readLine();
 					CommandParser.ParseInput(input);
 				}
-				
-				if(!todo.isEmpty()) {
+
+				if (!todo.isEmpty()) {
 					Task t = todo.poll();
 					runTask(t);
 				}
-				
+
 				synchronized (connexionsMutex) {
 					Iterator<Connection> iterator = netListener.getConnections().iterator();
 					for (; iterator.hasNext();) {
@@ -146,13 +166,13 @@ public class Server {
 						}
 					}
 				}
-				
+
 				try {
-					Thread.sleep((long) Math.max((serverPeriodNS-(System.nanoTime()-start))/1e6, 0));
+					Thread.sleep((long) Math.max((serverPeriodNS - (System.nanoTime() - start)) / 1e6, 0));
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

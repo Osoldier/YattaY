@@ -15,6 +15,14 @@ public class Task {
 		this.type = type;
 		this.args = args;
 	}
+	
+	public int getArgI(int i) {
+		return Integer.parseInt(args[i]);
+	}
+	
+	public String getArgS(int i) {
+		return args[i];
+	}
 
 	public TaskType getType() {
 		return type;

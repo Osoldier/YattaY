@@ -26,6 +26,9 @@ TCP opcodes goes from 00 to 127
 | 13     | (userid) (x) (y)             | Blue spawn is at (x,y)                                | Server | 2        | 0                |
 | 14     | (userid) (x) (y)             | Red spawn is at (x,y)                                 | Server | 2        | 0                |
 | 20     | (timestamp)                  | ping / ping response                                  | Any    | 0        | 0                |
+| 21     | (userid)                     | I want to change team                                 | Client | 1        | 0                |
+| 22     | (userid)                     | Team changed                                          | Server | 1        | 0                |
+| 23     | (userid)                     | Cannot join team                                      | Server | 1        | 0                |
 
 ### UDP
 

@@ -11,7 +11,9 @@ public enum TaskType {
 	//Level-related tasks
 	LVL_START(10, 2, true, 1, 0), LVL_DIMS(11, 2, true, 3, 0), BLOCK_INFO(12, 2, true, 3, 0), BLUE_SPAWN(13, 2, true, 3, 0), RED_SPAWN(14, 2, true, 3, 0),
 	//Server-related tasks
-	PING(20, 0, false, 2, 0);
+	PING(20, 0, false, 2, 0),
+	//Team-related requests
+	TEAM_CHANGE_REQUEST(21, 1, false, 1, 0), TEAM_CHANGE_OK(22, 1, true, 1, 0), TEAM_CHANGE_NOPE(23, 1, true, 1, 0);
 	
 	private int opcode;
 	private int priority;
