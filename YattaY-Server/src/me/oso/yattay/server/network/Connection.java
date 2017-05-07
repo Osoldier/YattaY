@@ -47,19 +47,19 @@ public class Connection extends Thread {
 					} else {
 						// add the incoming command to the todo list (verified
 						// by the parser)
-						Task t = CommandParser.ParseNetwork(message);
+						Task t = CommandParser.ParseNetwork(message, this);
 						if (t != null)
 							Server.getTodo().add(t);
 					}
 				}
-				
-				if(!messageList.isEmpty()) {
-					try {
-						outToClient.write(messageList.poll());
-					} catch(IOException e) {
-						shutDown();
+				synchronized (this) {
+					if (!messageList.isEmpty()) {
+						try {
+							outToClient.write(messageList.poll());
+						} catch (IOException e) {
+							shutDown();
+						}
 					}
-					
 				}
 			}
 		} catch (IOException e1) {
@@ -82,7 +82,9 @@ public class Connection extends Thread {
 		return socket;
 	}
 
-	public Queue<byte[]> getMessageList() {
-		return messageList;
+	public void addToQueue(byte[] m) {
+		synchronized (this) {
+			messageList.add(m);
+		}
 	}
 }

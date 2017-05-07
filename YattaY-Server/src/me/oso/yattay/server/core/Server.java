@@ -45,7 +45,7 @@ public class Server {
 	private int MAX_PLAYERS;
 	// Server registered users(IP -> status) (may not be useful)
 	private Map<String, PlayerStatus> users;
-
+	
 	private Map<Integer, Connection> usersConnections;
 	private List<Integer> usersIDs;
 	// Queue of task to be executed
@@ -62,6 +62,7 @@ public class Server {
 		this.data = new DataParser("serverdata.dat");
 		this.users = this.data.getRegistredUsers();
 		this.usersIDs = new ArrayList<>();
+		this.usersConnections = new HashMap<>();
 		this.netListener = new NetListener(this.config.getAttribute("bind-address"), Integer.parseInt(this.config.getAttribute("bind-port")));
 		todo = new PriorityQueue<>((Task o1, Task o2) -> Integer.compare(o1.getType().getPriority(), o2.getType().getPriority()));
 		// Init instances
@@ -84,21 +85,15 @@ public class Server {
 			case BLUE_SPAWN:
 				break;
 			case JOIN_ACCEPT:
+				Connection a = usersConnections.get(t.getArgI(1));
+				a.addToQueue(t.toMessage());
 				break;
 			case JOIN_DENY:
+				Connection d = usersConnections.get(t.getArgI(1));
+				d.addToQueue(t.toMessage());
 				break;
 			case JOIN_REQUEST:
-				if(netListener.getConnections().size() < MAX_PLAYERS) {
-					int sess_id = 0;
-					boolean specificJoin = false;
-					if(t.getArgs().length == 2) {
-						sess_id = t.getArgI(1);
-					}
-					
-					if(sess_id >= 0 && sess_id < games.length) {
-						
-					}
-				}
+				todo.add(handleJoinRq(t));
 				break;
 			case KICK:
 				break;
@@ -124,7 +119,44 @@ public class Server {
 				break;
 		}
 	}
+	
+	private Task handleJoinRq(Task t) {
+		int uid = genUserID();
+		usersIDs.add(uid);
+		usersConnections.put(uid, t.getParent());
+		if(netListener.getConnections().size() < MAX_PLAYERS) {
+			int sess_id = 0;
+			boolean specificJoin = false;
+			if(t.getArgs().length == 2) {
+				sess_id = t.getArgI(1);
+				specificJoin = true;
+			}
+			
+			if(specificJoin) {
+				if(!games[sess_id].join(t.getArgS(0))) {
+					return new Task(TaskType.JOIN_DENY, null, t.getArgS(0), ""+uid, "Session full");
+				} else {
+					return new Task(TaskType.JOIN_ACCEPT, null, t.getArgS(0), ""+uid, ""+sess_id);
+				}
+			} else if(sess_id >= 0 && sess_id < games.length) {
+				for (int i = 0; i < games.length; i++) {
+					if(games[sess_id].join(t.getArgS(0))) {
+						return new Task(TaskType.JOIN_ACCEPT, null, t.getArgS(0), ""+uid, ""+i);
+					}
+				}
+			}
+		}
+		return new Task(TaskType.JOIN_DENY, null, t.getArgS(0), ""+uid, "Server full");
+	}
 
+	public int genUserID() {
+		int uid = 0;
+		do {
+			uid = (int)(Math.random()*1e20);
+		} while(usersIDs.contains(uid));
+		return uid;
+	}
+	
 	/**
 	 * Starts the server, opens the socket and parse commands
 	 */
@@ -142,7 +174,7 @@ public class Server {
 				pingCnt++;
 				if (pingCnt == 5 * TICKRATE) {
 					for (Connection cn : netListener.getConnections()) {
-						cn.getMessageList().add(new Task(TaskType.PING, String.valueOf(Instant.now().toEpochMilli())).toMessage());
+						cn.addToQueue(new Task(TaskType.PING, null, String.valueOf(Instant.now().toEpochMilli())).toMessage());
 					}
 					pingCnt = 0;
 				}

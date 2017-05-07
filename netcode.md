@@ -16,7 +16,7 @@ TCP opcodes goes from 00 to 127
 |:-------|:-----------------------------|:------------------------------------------------------|:-------|:---------|:-----------------|
 | 00     | (Nickname) [sess_id]         | I want to join session sess_id                        | Client | 1        | 0                |
 | 01     | (Nickname) (userid) (sess_id)| You joined a session, your uid is userid              | Server | 1        | 0                |
-| 02     | (Nickname) [reason]          | Couldn't join a session                               | Server | 1        | 0                |
+| 02     | (Nickname) (userid) [reason] | Couldn't join a session                               | Server | 1        | 0                |
 | 03     | (userid) [reason]            | Kick user userid for reason                           | Client | 1        | 1                |
 | 04     | (userid)                     | I want to leave                                       | Client | 1        | 0                |
 | 05     | (userid)                     | Kthxbye                                               | Server | 1        | 0                |

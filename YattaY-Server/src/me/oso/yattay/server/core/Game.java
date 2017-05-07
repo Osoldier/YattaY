@@ -51,6 +51,10 @@ public class Game extends Thread {
 	public void update() {
 		
 	}
+	
+	public boolean join(String name) {
+		return false;
+	}
 
 	public Player[] getRed() {
 		return red;

@@ -1,5 +1,7 @@
 package me.oso.yattay.server.task;
 
+import me.oso.yattay.server.network.Connection;
+
 /**
  * Created by Thomas on 6 oct. 2016
  */
@@ -12,14 +14,14 @@ public class CommandParser {
 	 *            the string command
 	 * @return new task or null if <b>cmd</b> was incorrect
 	 */
-	public static Task ParseNetwork(String cmd) {
+	public static Task ParseNetwork(String cmd, Connection parent) {
 		if (cmd.getBytes().length >= 1) {
 			byte opcode = cmd.getBytes()[0];
 			String[] args = cmd.substring(1).split(";");
 			for (TaskType type : TaskType.values()) {
 				if (type.getOpcode() == (opcode & 0xFF)) {
 					if (!type.isFromServer())
-						return new Task(type, args);
+						return new Task(type, parent, args);
 					else
 						break;
 				}
