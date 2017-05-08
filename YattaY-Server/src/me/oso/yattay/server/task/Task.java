@@ -39,14 +39,18 @@ public class Task {
 	public byte[] toMessage() {
 		List<Byte> m = new LinkedList<>();
 		m.add((byte)type.getOpcode());
+		int i = 0;
 		for (String s : args) {
+			i++;
 			for (Byte b : s.getBytes()) {
 				m.add(b);
 			}
-			m.add((byte)' ');
+			if(i < args.length) {
+				m.add((byte)';');
+			}
 		}
 		byte[] mes = new byte[m.size()];
-		for (int i = 0; i < mes.length; i++) {
+		for (i = 0; i < mes.length; i++) {
 			mes[i] = m.get(i);
 		}
 		return mes;

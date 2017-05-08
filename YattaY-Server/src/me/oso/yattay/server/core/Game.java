@@ -1,5 +1,8 @@
 package me.oso.yattay.server.core;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.oso.yattay.player.Player;
 import me.oso.yattay.world.Level;
 
@@ -9,13 +12,15 @@ import me.oso.yattay.world.Level;
 public class Game extends Thread {
 
 	private Level level;
-	private Player[] red, blue;
+	private Map<Integer, Player> red, blue;
+	private int maxPlayersTeam;
 	private boolean running;
 	
 	public Game(Level level, int maxPlayersTeam) {
 		this.level = level;
-		this.red = new Player[maxPlayersTeam];
-		this.blue = new Player[maxPlayersTeam];
+		this.maxPlayersTeam = maxPlayersTeam;
+		this.red = new HashMap<>();
+		this.blue = new HashMap<>();
 	}
 	
 	@Override
@@ -52,15 +57,26 @@ public class Game extends Thread {
 		
 	}
 	
-	public boolean join(String name) {
-		return false;
+	public boolean join(int uid, String name) {
+		if(red.size() == maxPlayersTeam && blue.size() == maxPlayersTeam) return false;
+		
+		if(red.size() >= blue.size()) {
+			blue.put(uid, new Player(name));
+			blue.get(uid).getPosition().x = level.getBlueX();
+			blue.get(uid).getPosition().y = level.getBlueY();
+		} else {
+			red.put(uid, new Player(name));
+			red.get(uid).getPosition().x = level.getRedX();
+			red.get(uid).getPosition().y = level.getRedY();
+		}
+		return true;
 	}
 
-	public Player[] getRed() {
+	public Map<Integer, Player> getRed() {
 		return red;
 	}
 
-	public Player[] getBlue() {
+	public Map<Integer, Player> getBlue() {
 		return blue;
 	}
 

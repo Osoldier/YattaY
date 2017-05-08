@@ -50,6 +50,8 @@ public class Server {
 	private List<Integer> usersIDs;
 	// Queue of task to be executed
 	private static PriorityQueue<Task> todo;
+	
+	private Random rand;
 
 	private final String CONF_FILE = "server.conf";
 	private final String MAP_DIR = "maps/";
@@ -71,6 +73,7 @@ public class Server {
 		Level m1 = LevelParser.load(MAP_DIR + this.mapFiles[0] + ".ymf");
 		int mp = Integer.parseInt(this.config.getAttribute("max-players-team"));
 		this.MAX_PLAYERS = Integer.parseInt(this.config.getAttribute("max-instances")) * 2 * Integer.parseInt(this.config.getAttribute("max-players-team"));
+		this.rand = new Random();
 		for (int i = 0; i < games.length; i++) {
 			games[i] = new Game(new Level(m1), mp);
 		}
@@ -86,6 +89,7 @@ public class Server {
 				break;
 			case JOIN_ACCEPT:
 				Connection a = usersConnections.get(t.getArgI(1));
+				log.info("Player "+t.getArgS(0)+" joined session "+t.getArgI(2));
 				a.addToQueue(t.toMessage());
 				break;
 			case JOIN_DENY:
@@ -132,15 +136,19 @@ public class Server {
 				specificJoin = true;
 			}
 			
+			if(sess_id < 0 || sess_id > games.length - 1) {
+				return new Task(TaskType.JOIN_DENY, null, t.getArgS(0), ""+uid, "This session doesn't exists");
+			}
+			
 			if(specificJoin) {
-				if(!games[sess_id].join(t.getArgS(0))) {
+				if(!games[sess_id].join(uid, t.getArgS(0))) {
 					return new Task(TaskType.JOIN_DENY, null, t.getArgS(0), ""+uid, "Session full");
 				} else {
 					return new Task(TaskType.JOIN_ACCEPT, null, t.getArgS(0), ""+uid, ""+sess_id);
 				}
 			} else if(sess_id >= 0 && sess_id < games.length) {
 				for (int i = 0; i < games.length; i++) {
-					if(games[sess_id].join(t.getArgS(0))) {
+					if(games[sess_id].join(uid, t.getArgS(0))) {
 						return new Task(TaskType.JOIN_ACCEPT, null, t.getArgS(0), ""+uid, ""+i);
 					}
 				}
@@ -152,7 +160,7 @@ public class Server {
 	public int genUserID() {
 		int uid = 0;
 		do {
-			uid = (int)(Math.random()*1e20);
+			uid = rand.nextInt((int) 1e6);
 		} while(usersIDs.contains(uid));
 		return uid;
 	}
